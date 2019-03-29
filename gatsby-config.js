@@ -1,7 +1,7 @@
 module.exports = {
   pathPrefix: '/my-web-tools',
   siteMetadata: {
-    title: `MyChat`,
+    title: `MyWebTools`,
     description: `The modular web tools, started with a chat.`,
     author: `@gatsbyjs`,
   },

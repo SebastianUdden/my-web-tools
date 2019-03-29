@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import { colors } from '../constants/colors';
 import { Chat } from './chat/Chat';
 import { LoginForm } from './login/LoginForm';
+import { Welcome } from './welcome/Welcome';
 import { SignupForm } from './signup/SignupForm';
 import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
 
 export const Main = () => {
-  const [tab, setTab] = useState('Chat');
+  const [tab, setTab] = useState('Welcome');
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(undefined);
   const [signup, setSignup] = useState(false);
@@ -66,6 +67,7 @@ export const Main = () => {
               </Tab>
             </TabWrapper>
             <MainWrapper>
+              {tab === 'Welcome' && <Welcome currentUser={currentUser} />}
               {tab === 'Users' && (
                 <Users currentUser={currentUser} users={users} />
               )}

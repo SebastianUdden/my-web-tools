@@ -24,9 +24,16 @@ export const ChatMessage = ({
         isFirstMessage={isFirstMessage}
       >
         <Avatar
-          isCurrentUser={isCurrentUser}
           image={user && user.image}
           isVisible={isFirstMessage}
+          margin={`${
+            !isCurrentUser && isFirstMessage
+              ? '1.6rem'
+              : isCurrentUser && isFirstMessage
+              ? '-0.11rem'
+              : 0
+          } 0.5rem 0 0.3rem`}
+          size={2.5}
         />
         <div>
           {!isCurrentUser && isFirstMessage && (

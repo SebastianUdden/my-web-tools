@@ -7,7 +7,12 @@ export const User = ({ user, isCurrentUser }) => {
   return (
     <UserWrapper isCurrentUser={isCurrentUser}>
       <AvatarWrapper>
-        <Avatar image={user.image} isCurrentUser={false} isVisible={true} />
+        <Avatar
+          image={user.image}
+          isVisible={true}
+          margin={'0 0.5rem 0 0'}
+          size={5}
+        />
         <Username>{user.username}</Username>
       </AvatarWrapper>
       <Info>
@@ -38,6 +43,7 @@ const Info = styled.p`
 
 const AvatarWrapper = styled.div`
   height: 5rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
 `;
