@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: '/my-wealth',
+  pathPrefix: '/my-web-tools',
   siteMetadata: {
     title: `MyChat`,
     description: `The modular web tools, started with a chat.`,
