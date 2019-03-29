@@ -6,7 +6,7 @@ import { LoginInput } from '../login/LoginInput';
 import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 
-export const SignupForm = ({ setSignup }) => {
+export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
   const [showSignup, setShowSignup] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -88,7 +88,8 @@ export const SignupForm = ({ setSignup }) => {
                   location,
                   image,
                 },
-                users
+                users,
+                setSignUpSuccessful
               );
               localStorage.clear();
               setSignup(false);
@@ -121,7 +122,7 @@ const SignupButton = styled.button`
   }
 `;
 
-const HandleSignup = (signupData, users) => {
+const HandleSignup = (signupData, users, setSignUpSuccessful) => {
   if (
     users &&
     users.find(
@@ -134,5 +135,6 @@ const HandleSignup = (signupData, users) => {
     create(`${apiUrl}/users`, signupData, 'Unauthorized').then(response => {
       console.log('USER-CREATE-response: ', response);
     });
+    setSignUpSuccessful(true);
   }
 };

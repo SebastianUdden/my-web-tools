@@ -6,7 +6,7 @@ import { LoginInput } from './LoginInput';
 import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 
-export const LoginForm = ({ setCurrentUser, setSignup }) => {
+export const LoginForm = ({ setCurrentUser, setSignup, signUpSuccessful }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -51,9 +51,18 @@ export const LoginForm = ({ setCurrentUser, setSignup }) => {
           {loginAttempt > 0 && (
             <p style={{ color: 'red' }}>Invalid login ({loginAttempt})</p>
           )}
-          <p>
-            Sign up <Signup onClick={() => setSignup(true)}>here</Signup>
-          </p>
+          {!signUpSuccessful && (
+            <p>
+              Sign up <Signup onClick={() => setSignup(true)}>here</Signup>
+            </p>
+          )}
+          <br />
+          {signUpSuccessful && (
+            <p>
+              Sign up successful! You can now log in with your new username and
+              password.
+            </p>
+          )}
         </>
       )}
     </LoginFormWrapper>
@@ -62,6 +71,10 @@ export const LoginForm = ({ setCurrentUser, setSignup }) => {
 
 const LoginFormWrapper = styled.div`
   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 20rem;
   text-align: center;
 `;
 

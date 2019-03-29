@@ -15,6 +15,7 @@ export const Main = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
   const [signup, setSignup] = useState(false);
   const [showSite, setShowSite] = useState(false);
+  const [signUpSuccessful, setSignUpSuccessful] = useState(false);
 
   useEffect(() => {
     setShowSite(false);
@@ -40,12 +41,17 @@ export const Main = () => {
       <>
         {!currentUser && !signup && (
           <MainWrapper>
-            <LoginForm setSignup={setSignup} setCurrentUser={setCurrentUser} />
+            <LoginForm
+              setSignup={setSignup}
+              signUpSuccessful={signUpSuccessful}
+              setCurrentUser={setCurrentUser}
+            />
           </MainWrapper>
         )}
         {!currentUser && signup && (
           <MainWrapper>
             <SignupForm
+              setSignUpSuccessful={setSignUpSuccessful}
               setCurrentUser={setCurrentUser}
               currentUser={currentUser}
               setSignup={setSignup}
