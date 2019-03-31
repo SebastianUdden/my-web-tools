@@ -22,8 +22,6 @@ export const Main = () => {
     setTimeout(() => {
       setShowSite(true);
     }, 400);
-  }, []);
-  useEffect(() => {
     get(`${apiUrl}/users`, 'Unauthorized').then(users => {
       setUsers(users);
       setCurrentUser(
@@ -34,7 +32,7 @@ export const Main = () => {
         )
       );
     });
-  }, [currentUser]);
+  }, []);
 
   return (
     showSite && (

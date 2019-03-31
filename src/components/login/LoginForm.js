@@ -101,13 +101,15 @@ const Signup = styled.span`
 
 const HandleLogin = (username, password, setCurrentUser, users) => {
   localStorage.clear();
-  if (
+  const currentUser =
     users &&
-    users.find(user => user.username === username && user.password === password)
-  ) {
+    users.find(
+      user => user.username === username && user.password === password
+    );
+  if (currentUser) {
     localStorage.setItem('username', username);
     localStorage.setItem('password', password);
-    setCurrentUser(username);
+    setCurrentUser(currentUser);
   } else {
     setCurrentUser(undefined);
     console.log('Set loggedIn: false');
