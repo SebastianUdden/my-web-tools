@@ -35,7 +35,7 @@ export const Main = () => {
         )
       );
     });
-    setTab('Welcome');
+    setTab(localStorage.getItem('tab') || 'Welcome');
   }, [signUpSuccessful, loginSuccessful, updateUsers]);
 
   return (
@@ -64,13 +64,13 @@ export const Main = () => {
         {currentUser && (
           <>
             <TabWrapper>
-              <Tab selected={tab === 'Users'} onClick={() => setTab('Users')}>
+              <Tab selected={tab === 'Users'} onClick={() => saveTab('Users', setTab)}>
                 Users
               </Tab>
-              <Tab selected={tab === 'Chat'} onClick={() => setTab('Chat')}>
+              <Tab selected={tab === 'Chat'} onClick={() => saveTab('Chat', setTab)}>
                 Chat
               </Tab>
-              <Tab selected={tab === 'Habits'} onClick={() => setTab('Habits')}>
+              <Tab selected={tab === 'Habits'} onClick={() => saveTab('Habits', setTab)}>
                 Habits
               </Tab>
               <Tab
@@ -104,6 +104,12 @@ export const Main = () => {
     )
   );
 };
+
+const saveTab = (tab,setTab) =>
+{
+  setTab(tab)
+  localStorage.setItem('tab',tab)
+}
 
 const MainWrapper = styled.div`
   color: ${colors.white};
