@@ -30,7 +30,7 @@ export const create = async (url, body, token) => {
     })
     .then(response => {
       console.log('POST-response: ', response);
-      return response && response.data && response.data;
+      return response && response.data;
     })
     .catch(error => {
       console.log('POST-error: ', error);
@@ -39,8 +39,23 @@ export const create = async (url, body, token) => {
   return value;
 };
 
-export const update = (url, token) => {
-  return `Updating ${url}, authenticating with ${token}`;
+export const update = async (url, body, token) => {
+  const value = await axios
+    .put(url, body, {
+      params: {
+        token,
+      },
+    })
+    .then(response => {
+      console.log('PUT-response', response);
+      return response && response.data;
+    })
+    .catch(error => {
+      console.log('PUT-error: ', error);
+      return error;
+    });
+
+  return value;
 };
 
 export const remove = async (url, token) => {
@@ -48,7 +63,7 @@ export const remove = async (url, token) => {
     .delete(url)
     .then(response => {
       console.log('DELETE-response: ', response);
-      return response && response.data && response.data;
+      return response && response.data;
     })
     .catch(error => {
       console.log('DELETE-error: ', error);

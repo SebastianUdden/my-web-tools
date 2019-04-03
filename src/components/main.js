@@ -4,6 +4,7 @@ import { colors } from '../constants/colors';
 import { Chat } from './chat/Chat';
 import { LoginForm } from './login/LoginForm';
 import { Welcome } from './welcome/Welcome';
+import { Habits } from './habits/Habits.js';
 import { SignupForm } from './signup/SignupForm';
 import { Users } from './users/Users';
 import { get } from '../utils/api';
@@ -16,6 +17,8 @@ export const Main = () => {
   const [signup, setSignup] = useState(false);
   const [showSite, setShowSite] = useState(false);
   const [signUpSuccessful, setSignUpSuccessful] = useState(false);
+  const [loginSuccessful, setLoginSuccessful] = useState(false);
+  const [updateUsers, setUpdateUsers] = useState(false);
 
   useEffect(() => {
     setShowSite(false);
@@ -32,7 +35,8 @@ export const Main = () => {
         )
       );
     });
-  }, []);
+    setTab('Welcome');
+  }, [signUpSuccessful, loginSuccessful, updateUsers]);
 
   return (
     showSite && (
@@ -42,6 +46,7 @@ export const Main = () => {
             <LoginForm
               setSignup={setSignup}
               signUpSuccessful={signUpSuccessful}
+              setLoginSuccessful={setLoginSuccessful}
               setCurrentUser={setCurrentUser}
             />
           </MainWrapper>
@@ -59,12 +64,20 @@ export const Main = () => {
         {currentUser && (
           <>
             <TabWrapper>
-              <Tab onClick={() => setTab('Users')}>Users</Tab>
-              <Tab onClick={() => setTab('Chat')}>Chat</Tab>
+              <Tab selected={tab === 'Users'} onClick={() => setTab('Users')}>
+                Users
+              </Tab>
+              <Tab selected={tab === 'Chat'} onClick={() => setTab('Chat')}>
+                Chat
+              </Tab>
+              <Tab selected={tab === 'Habits'} onClick={() => setTab('Habits')}>
+                Habits
+              </Tab>
               <Tab
                 onClick={() => {
                   localStorage.clear();
                   setCurrentUser(undefined);
+                  setLoginSuccessful(false);
                 }}
               >
                 Sign Out
@@ -73,11 +86,17 @@ export const Main = () => {
             <MainWrapper>
               {tab === 'Welcome' && <Welcome currentUser={currentUser} />}
               {tab === 'Users' && (
-                <Users currentUser={currentUser} users={users} />
+                <Users
+                  currentUser={currentUser}
+                  users={users}
+                  updateUsers={updateUsers}
+                  setUpdateUsers={setUpdateUsers}
+                />
               )}
               {tab === 'Chat' && (
                 <Chat users={users} currentUser={currentUser} />
               )}
+              {tab === 'Habits' && <Habits />}
             </MainWrapper>
           </>
         )}
@@ -100,7 +119,7 @@ const TabWrapper = styled.div`
 `;
 
 const Tab = styled.button`
-  background-color: ${colors.darkGrey};
+  background-color: ${p => (p.selected ? colors.brightGrey : colors.darkGrey)};
   color: ${colors.white};
   width: 100%;
   padding: 0.8rem 0;
@@ -108,7 +127,7 @@ const Tab = styled.button`
   border: none;
 
   :hover {
-    background-color: ${colors.grey};
+    background-color: ${colors.brightGrey};
     cursor: pointer;
   }
 `;

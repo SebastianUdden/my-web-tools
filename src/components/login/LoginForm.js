@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { get } from '../../utils/api';
+import { get, update } from '../../utils/api';
 import { LoginInput } from './LoginInput';
 import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 
-export const LoginForm = ({ setCurrentUser, setSignup, signUpSuccessful }) => {
+export const LoginForm = ({
+  setCurrentUser,
+  setSignup,
+  signUpSuccessful,
+  setLoginSuccessful,
+}) => {
   const [showLogin, setShowLogin] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -42,8 +47,14 @@ export const LoginForm = ({ setCurrentUser, setSignup, signUpSuccessful }) => {
           />
           <LoginButton
             onClick={() => {
-              setLoginAttempt(loginAttempt + 1);
-              HandleLogin(username, password, setCurrentUser, users);
+              HandleLogin(
+                username,
+                password,
+                setCurrentUser,
+                users,
+                setLoginSuccessful
+              );
+              setTimeout(() => setLoginAttempt(loginAttempt + 1), 200);
             }}
           >
             Login
@@ -99,7 +110,13 @@ const Signup = styled.span`
   }
 `;
 
-const HandleLogin = (username, password, setCurrentUser, users) => {
+const HandleLogin = (
+  username,
+  password,
+  setCurrentUser,
+  users,
+  setLoginSuccessful
+) => {
   localStorage.clear();
   const currentUser =
     users &&
@@ -109,7 +126,18 @@ const HandleLogin = (username, password, setCurrentUser, users) => {
   if (currentUser) {
     localStorage.setItem('username', username);
     localStorage.setItem('password', password);
-    setCurrentUser(currentUser);
+    update(
+      `${apiUrl}/users/${currentUser._id}`,
+      {
+        ...currentUser,
+        updatedAt: new Date(),
+      },
+      currentUser.username
+    ).then(response => {
+      console.log('USER-UPDATE-BUTTON-response: ', response);
+      setLoginSuccessful(true);
+      setCurrentUser(currentUser);
+    });
   } else {
     setCurrentUser(undefined);
     console.log('Set loggedIn: false');

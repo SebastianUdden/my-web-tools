@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import { Avatar } from '../users/Avatar';
-import { remove } from '../../utils/api';
+import { update, remove } from '../../utils/api';
 import { apiUrl } from '../../constants/urls';
 
 export const ChatMessage = ({
@@ -14,14 +14,35 @@ export const ChatMessage = ({
   isCurrentUser,
   currentUser,
 }) => {
+  const wrapperRef = useRef(null);
   const [clicked, setClicked] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [messageText, setMessageText] = useState(message.text);
   const user = users && users.find(user => user._id === message.user);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside, false);
+    return () =>
+      document.removeEventListener('mousedown', handleClickOutside, false);
+  }, []);
+
+  const handleClickOutside = e => {
+    console.log('Clicking: ', e.target);
+    if (
+      wrapperRef.current &&
+      !wrapperRef.current.contains(e.target) &&
+      e.target.id !== 'EditButton'
+    ) {
+      setEditMode(false);
+    }
+  };
 
   return (
     <>
       <ChatMessageWrapper
         isCurrentUser={isCurrentUser}
         isFirstMessage={isFirstMessage}
+        ref={wrapperRef}
       >
         <Avatar
           image={user && user.image}
@@ -42,29 +63,75 @@ export const ChatMessage = ({
           <Message
             empty={!message.text || !message.text.trim()}
             isCurrentUser={isCurrentUser}
-            onClick={() => setClicked(!clicked)}
+            onClick={() => !editMode && setClicked(!clicked)}
           >
-            {message.text}{' '}
-            {isCurrentUser && clicked && (
-              <Delete
-                onClick={() => {
-                  remove(
-                    `${apiUrl}/messages/${message._id}`,
-                    currentUser.username
-                  ).then(response => {
-                    console.log('response: ', response);
-                    setDbUpdate(!dbUpdate);
-                  });
+            {!editMode && messageText}
+            {editMode && (
+              <EditText
+                value={messageText}
+                onChange={e => {
+                  setMessageText(e.target.value);
                 }}
-              >
-                &#x2715;
-              </Delete>
+              />
+            )}
+            {isCurrentUser && clicked && (
+              <>
+                {!editMode && (
+                  <MessageButton
+                    id="EditButton"
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditMode(true);
+                    }}
+                  >
+                    &#x270E;
+                  </MessageButton>
+                )}
+                {editMode && (
+                  <MessageButton
+                    onClick={e => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setEditMode(false);
+                      update(
+                        `${apiUrl}/messages/${message._id}`,
+                        {
+                          text: messageText,
+                        },
+                        currentUser.username
+                      ).then(response => {
+                        console.log('CHAT-UPDATE-BUTTON-response: ', response);
+                        setDbUpdate(!dbUpdate);
+                      });
+                    }}
+                  >
+                    &#10003;
+                  </MessageButton>
+                )}
+                <MessageButton
+                  onClick={e => {
+                    e.preventDefault();
+                    remove(
+                      `${apiUrl}/messages/${message._id}`,
+                      currentUser.username
+                    ).then(response => {
+                      console.log('response: ', response);
+                      setDbUpdate(!dbUpdate);
+                    });
+                  }}
+                >
+                  &#x2715;
+                </MessageButton>
+              </>
             )}
           </Message>
           {clicked && (
             <CreatedAt>
               {message.createdAt &&
-                new Date(message.createdAt).toLocaleString()}
+                new Date(
+                  message.updatedAt ? message.updatedAt : message.createdAt
+                ).toLocaleString()}
             </CreatedAt>
           )}
         </div>
@@ -81,8 +148,6 @@ const ChatMessageWrapper = styled.div`
   display: flex;
   flex-direction: ${p => (p.isCurrentUser ? 'row-reverse' : 'row')};
   max-width: 100%;
-  /* border: ${p =>
-    p.isFirstMessage ? '1px solid red' : '1px solid green'}; */
 `;
 
 const Message = styled.p`
@@ -114,8 +179,7 @@ const Username = styled.p`
   color: ${colors.brightGrey};
 `;
 
-const Delete = styled.span`
-  background-color: ${colors.brightGrey};
+const MessageButton = styled.span`
   color: ${colors.white};
   border-radius: 1rem;
   margin-left: 0.5rem;
@@ -123,4 +187,12 @@ const Delete = styled.span`
   :hover {
     color: ${colors.white};
   }
+`;
+
+const EditText = styled.textarea`
+  background-color: inherit;
+  outline: none;
+  color: ${colors.white};
+  margin: 1rem;
+  padding: 1.5rem 0.5rem;
 `;
