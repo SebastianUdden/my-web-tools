@@ -19,7 +19,10 @@ const Header = ({ siteTitle }) => (
       <h1 style={{ margin: 0 }}>
         <Link
           to="/"
-          onClick={() => document.location.reload()}
+          onClick={() => {
+            localStorage.setItem("tab","Welcome")
+            document.location.reload();
+          }}
           style={{
             color: colors.white,
             textDecoration: `none`,

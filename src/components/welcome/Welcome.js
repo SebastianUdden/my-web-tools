@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import {defaultImageUrl} from '../../constants/urls';
 import { Avatar } from '../users/Avatar';
 
 export const Welcome = ({ currentUser }) => (
   <WelcomeWrapper>
     <Avatar
-      image={currentUser.image}
+      image={currentUser.image || defaultImageUrl}
       isVisible={true}
       margin={'0 0.5rem 0 0'}
       size={10}

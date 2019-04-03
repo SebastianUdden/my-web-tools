@@ -8,7 +8,7 @@ export const Avatar = ({ image, isVisible, size, margin }) => {
       margin={margin}
       src={image}
       size={size}
-      alt="Avatar"
+      alt="Image unavailable"
     />
   );
 };

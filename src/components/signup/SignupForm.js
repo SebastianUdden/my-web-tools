@@ -3,8 +3,9 @@ import styled from 'styled-components';
 
 import { get, create } from '../../utils/api';
 import { LoginInput } from '../login/LoginInput';
+import { Avatar } from '../users/Avatar';
 import { colors } from '../../constants/colors';
-import { apiUrl } from '../../constants/urls';
+import { apiUrl,defaultImageUrl } from '../../constants/urls';
 
 export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
   const [showSignup, setShowSignup] = useState(false);
@@ -17,6 +18,7 @@ export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
   const [image, setImage] = useState('');
   const [users, setUsers] = useState('');
   const [signupAttempt, setSignupAttempt] = useState(0);
+
 
   useEffect(() => {
     setTimeout(() => setShowSignup(true), 200);
@@ -75,6 +77,7 @@ export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
             value={image}
             setValue={setImage}
           />
+          <Avatar image={image || defaultImageUrl} isVisible={true} margin={'0 auto 2rem'} size={10} />
           <SignupButton
             onClick={() => {
               setSignupAttempt(signupAttempt + 1);
@@ -107,7 +110,10 @@ export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
 };
 
 const SignupFormWrapper = styled.div`
-  text-align: center;
+  display:flex;
+  text-align:center;
+  flex-direction:column;
+  justify-content: center;
 `;
 
 const SignupButton = styled.button`

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { update } from '../../utils/api';
 import { colors } from '../../constants/colors';
 import { Avatar } from './Avatar';
-import { apiUrl } from '../../constants/urls';
+import { apiUrl, defaultImageUrl } from '../../constants/urls';
 
 export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
   const [expandedView, setExpandedView] = useState(false);
@@ -23,7 +23,7 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
     >
       <AvatarWrapper>
         <Avatar
-          image={user.image}
+          image={user.image || defaultImageUrl}
           isVisible={true}
           margin={'0 0.5rem 0 0'}
           size={expandedView ? 5 : 3}
@@ -142,7 +142,7 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
                 }}
               />
               <Avatar
-                image={image}
+                image={image || defaultImageUrl}
                 isVisible={true}
                 margin={'0 auto'}
                 size={10}

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import { Avatar } from '../users/Avatar';
 import { update, remove } from '../../utils/api';
-import { apiUrl } from '../../constants/urls';
+import { apiUrl, defaultImageUrl } from '../../constants/urls';
 
 export const ChatMessage = ({
   message,
@@ -45,7 +45,7 @@ export const ChatMessage = ({
         ref={wrapperRef}
       >
         <Avatar
-          image={user && user.image}
+          image={(user && user.image) || defaultImageUrl }
           isVisible={isFirstMessage}
           margin={`${
             !isCurrentUser && isFirstMessage
