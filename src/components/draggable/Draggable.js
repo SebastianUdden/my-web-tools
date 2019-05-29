@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { colors } from '../../constants/colors';
 
 export default class Draggable extends React.Component {
   state = {

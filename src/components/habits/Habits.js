@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Habit } from './habit';
+import { DraggableList } from '../draggable/DraggableList';
 
 const mockHabits = [
   {
@@ -8,7 +9,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date(), new Date(), new Date()],
-    priority: 1,
+    rank: 1,
   },
   {
     name: 'Work on my-web-tools',
@@ -16,7 +17,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 2,
+    rank: 2,
   },
   {
     name: 'Water plants',
@@ -24,7 +25,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 3,
+    rank: 3,
   },
   {
     name: 'Clean apartment',
@@ -32,7 +33,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 4,
+    rank: 4,
   },
   {
     name: 'Sort closets',
@@ -40,7 +41,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 5,
+    rank: 5,
   },
   {
     name: 'Sell old computers',
@@ -48,7 +49,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 6,
+    rank: 6,
   },
   {
     name: 'Prepare bachelor party',
@@ -56,7 +57,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 7,
+    rank: 7,
   },
   {
     name: 'Play badminton',
@@ -64,7 +65,7 @@ const mockHabits = [
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date()],
-    priority: 8,
+    rank: 8,
   },
 ];
 
@@ -72,18 +73,20 @@ export const Habits = () => {
   const [orderedHabits, setOrderedHabits] = useState(mockHabits);
   return (
     <div>
-      {orderedHabits.map(habit => {
-        return (
-          habit && (
-            <Habit
-              key={habit.name}
-              {...habit}
-              orderedHabits={orderedHabits}
-              setOrderedHabits={setOrderedHabits}
-            />
-          )
-        );
-      })}
+      <DraggableList listData={orderedHabits} />
     </div>
   );
 };
+
+// {orderedHabits.map(habit => {
+//   return (
+//     habit && (
+//       <Habit
+//         key={habit.name}
+//         {...habit}
+//         orderedHabits={orderedHabits}
+//         setOrderedHabits={setOrderedHabits}
+//       />
+//     )
+//   );
+// })}
