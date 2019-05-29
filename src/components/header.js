@@ -20,7 +20,7 @@ const Header = ({ siteTitle }) => (
         <Link
           to="/"
           onClick={() => {
-            localStorage.setItem("tab","Welcome")
+            sessionStorage.setItem('tab', 'Welcome');
             document.location.reload();
           }}
           style={{
@@ -36,7 +36,7 @@ const Header = ({ siteTitle }) => (
             textDecoration: `none`,
           }}
           onClick={() => {
-            localStorage.clear();
+            sessionStorage.clear();
           }}
         >
           Sign out

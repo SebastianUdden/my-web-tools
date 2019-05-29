@@ -27,7 +27,6 @@ export const ChatMessage = ({
   }, []);
 
   const handleClickOutside = e => {
-    console.log('Clicking: ', e.target);
     if (
       wrapperRef.current &&
       !wrapperRef.current.contains(e.target) &&
@@ -45,7 +44,7 @@ export const ChatMessage = ({
         ref={wrapperRef}
       >
         <Avatar
-          image={(user && user.image) || defaultImageUrl }
+          image={(user && user.image) || defaultImageUrl}
           isVisible={isFirstMessage}
           margin={`${
             !isCurrentUser && isFirstMessage
@@ -101,7 +100,6 @@ export const ChatMessage = ({
                         },
                         currentUser.username
                       ).then(response => {
-                        console.log('CHAT-UPDATE-BUTTON-response: ', response);
                         setDbUpdate(!dbUpdate);
                       });
                     }}
@@ -116,7 +114,6 @@ export const ChatMessage = ({
                       `${apiUrl}/messages/${message._id}`,
                       currentUser.username
                     ).then(response => {
-                      console.log('response: ', response);
                       setDbUpdate(!dbUpdate);
                     });
                   }}

@@ -19,7 +19,7 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
     <UserWrapper
       isCurrentUser={isCurrentUser}
       expandedView={expandedView}
-      onClick={() => setExpandedView(!expandedView)}
+      onClick={() => !editMode && setExpandedView(!expandedView)}
     >
       <AvatarWrapper>
         <Avatar
@@ -54,7 +54,7 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
                 setImage(user.image);
               }}
             >
-              &#8592;
+              Back &#8592;
             </MessageButton>
             <MessageButton
               onClick={e => {
@@ -73,13 +73,12 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
                   },
                   user.username
                 ).then(response => {
-                  localStorage.setItem('username', username);
-                  console.log('CHAT-UPDATE-BUTTON-response: ', response);
+                  sessionStorage.setItem('username', username);
                   setUpdateUsers(!updateUsers);
                 });
               }}
             >
-              &#10003;
+              Save &#10003;
             </MessageButton>
           </>
         )}
@@ -185,9 +184,11 @@ const AvatarWrapper = styled.div`
 
 const MessageButton = styled.span`
   color: ${colors.white};
-  border-radius: 1rem;
+  background-color: ${colors.darkerGrey};
+  border: 1px solid white;
+  border-radius: 0.5rem;
   margin-left: 0.5rem;
-  padding: 0 0.3rem;
+  padding: 0.4rem 0.5rem 0.3rem;
   cursor: pointer;
   :hover {
     color: ${colors.orange};

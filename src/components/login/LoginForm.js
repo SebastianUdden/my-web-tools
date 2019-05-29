@@ -23,7 +23,7 @@ export const LoginForm = ({
   }, []);
   useEffect(() => {
     get(`${apiUrl}/users`).then(users => {
-      console.log('Login-users: ', users);
+      if (users.error) return;
       setUsers(users);
     });
   }, [loginAttempt]);
@@ -111,21 +111,21 @@ const Signup = styled.span`
 `;
 
 const HandleLogin = (
-  username,
-  password,
+  username = process.env.MOCK_USER,
+  password = process.env.MOCK_PASSWORD,
   setCurrentUser,
   users,
   setLoginSuccessful
 ) => {
-  localStorage.clear();
+  sessionStorage.clear();
   const currentUser =
     users &&
     users.find(
       user => user.username === username && user.password === password
     );
   if (currentUser) {
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
+    sessionStorage.setItem('username', username);
+    sessionStorage.setItem('password', password);
     update(
       `${apiUrl}/users/${currentUser._id}`,
       {
@@ -134,12 +134,10 @@ const HandleLogin = (
       },
       currentUser.username
     ).then(response => {
-      console.log('USER-UPDATE-BUTTON-response: ', response);
       setLoginSuccessful(true);
       setCurrentUser(currentUser);
     });
   } else {
     setCurrentUser(undefined);
-    console.log('Set loggedIn: false');
   }
 };

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-
 import { Habit } from './habit';
 
-const habits = [
+const mockHabits = [
   {
     name: 'Workout',
-    description: 'Example',
+    description: 'Every workday morning',
     startDate: new Date(),
     endDate: new Date(),
     occasions: [new Date(), new Date(), new Date()],
@@ -71,11 +69,21 @@ const habits = [
 ];
 
 export const Habits = () => {
+  const [orderedHabits, setOrderedHabits] = useState(mockHabits);
   return (
     <div>
-      {habits.map(habit => (
-        <Habit {...habit} />
-      ))}
+      {orderedHabits.map(habit => {
+        return (
+          habit && (
+            <Habit
+              key={habit.name}
+              {...habit}
+              orderedHabits={orderedHabits}
+              setOrderedHabits={setOrderedHabits}
+            />
+          )
+        );
+      })}
     </div>
   );
 };

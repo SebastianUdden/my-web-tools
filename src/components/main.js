@@ -5,10 +5,13 @@ import { Chat } from './chat/Chat';
 import { LoginForm } from './login/LoginForm';
 import { Welcome } from './welcome/Welcome';
 import { Habits } from './habits/Habits.js';
+import { Lab } from './lab/Lab.js';
 import { SignupForm } from './signup/SignupForm';
 import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
+
+const tabs = ['Users', 'Chat', 'Habits', 'Lab'];
 
 export const Main = () => {
   const [tab, setTab] = useState('Welcome');
@@ -26,16 +29,19 @@ export const Main = () => {
       setShowSite(true);
     }, 400);
     get(`${apiUrl}/users`, 'Unauthorized').then(users => {
+      if (users.error) return;
       setUsers(users);
       setCurrentUser(
         users.find(
           user =>
-            user.username === localStorage.getItem('username') &&
-            user.password === localStorage.getItem('password')
+            user.username === process.env.MOCK_USER ||
+            (sessionStorage.getItem('username') &&
+              user.password === process.env.MOCK_PASSWORD) ||
+            sessionStorage.getItem('password')
         )
       );
     });
-    setTab(localStorage.getItem('tab') || 'Welcome');
+    setTab(sessionStorage.getItem('tab') || 'Welcome');
   }, [signUpSuccessful, loginSuccessful, updateUsers]);
 
   return (
@@ -64,18 +70,19 @@ export const Main = () => {
         {currentUser && (
           <>
             <TabWrapper>
-              <Tab selected={tab === 'Users'} onClick={() => saveTab('Users', setTab)}>
-                Users
-              </Tab>
-              <Tab selected={tab === 'Chat'} onClick={() => saveTab('Chat', setTab)}>
-                Chat
-              </Tab>
-              <Tab selected={tab === 'Habits'} onClick={() => saveTab('Habits', setTab)}>
-                Habits
-              </Tab>
+              {tabs &&
+                tabs.map(x => (
+                  <Tab
+                    key={x}
+                    selected={tab === x}
+                    onClick={() => saveTab(x, setTab)}
+                  >
+                    {x}
+                  </Tab>
+                ))}
               <Tab
                 onClick={() => {
-                  localStorage.clear();
+                  sessionStorage.clear();
                   setCurrentUser(undefined);
                   setLoginSuccessful(false);
                 }}
@@ -97,6 +104,7 @@ export const Main = () => {
                 <Chat users={users} currentUser={currentUser} />
               )}
               {tab === 'Habits' && <Habits />}
+              {tab === 'Lab' && <Lab />}
             </MainWrapper>
           </>
         )}
@@ -105,11 +113,10 @@ export const Main = () => {
   );
 };
 
-const saveTab = (tab,setTab) =>
-{
-  setTab(tab)
-  localStorage.setItem('tab',tab)
-}
+const saveTab = (tab, setTab) => {
+  setTab(tab);
+  sessionStorage.setItem('tab', tab);
+};
 
 const MainWrapper = styled.div`
   color: ${colors.white};

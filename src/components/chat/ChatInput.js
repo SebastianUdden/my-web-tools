@@ -34,8 +34,6 @@ export const ChatInput = ({ userId, setDbUpdate, dbUpdate, currentUser }) => {
       },
       currentUser.username
     ).then(response => {
-      console.log('userId: ', userId);
-      console.log('CHAT-CREATE-KEYPRESS-response: ', response);
       setDbUpdate(!dbUpdate);
       document.getElementById('ChatInput').focus();
       setTimeout(() => scrollToBottom(setValue, setRows), 200);
@@ -65,8 +63,6 @@ export const ChatInput = ({ userId, setDbUpdate, dbUpdate, currentUser }) => {
                 },
                 currentUser.username
               ).then(response => {
-                console.log('userId: ', userId);
-                console.log('CHAT-CREATE-BUTTON-response: ', response);
                 setDbUpdate(!dbUpdate);
                 document.getElementById('ChatInput').focus();
                 setTimeout(() => scrollToBottom(setValue, setRows), 200);
@@ -92,18 +88,18 @@ const ChatInputWrapper = styled.div`
   right: 0;
 `;
 
-const Input = styled.textarea`
-  width: 100%;
-  min-width: 50vw;
-  padding: 0.5rem;
-  background-color: ${colors.darkerGrey};
-  color: ${colors.white};
-  border: none;
-  border-bottom: 1px solid ${colors.white};
-  outline: none;
-  border: 1px solid red;
-  height: 100%;
-`;
+// const Input = styled.textarea`
+//   width: 100%;
+//   min-width: 50vw;
+//   padding: 0.5rem;
+//   background-color: ${colors.darkerGrey};
+//   color: ${colors.white};
+//   border: none;
+//   border-bottom: 1px solid ${colors.white};
+//   outline: none;
+//   border: 1px solid red;
+//   height: 100%;
+// `;
 
 const Button = styled.button`
   padding: 0.6rem 0.6rem;

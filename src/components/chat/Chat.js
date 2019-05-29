@@ -10,20 +10,18 @@ export const Chat = ({ users, currentUser }) => {
   const [dbUpdate, setDbUpdate] = useState(false);
   // const currentUser =
   //   users &&
-  //   users.find(user => localStorage.getItem('username') === user.username);
-  // console.log('currentUser: ', currentUser);
+  //   users.find(user => sessionStorage.getItem('username') === user.username);
 
   useEffect(() => {
     // if (
     //   users &&
     //   Array.isArray(users) &&
     //   users.length !== 0 &&
-    //   !users.find(user => localStorage.getItem('username') === user.username)
+    //   !users.find(user => sessionStorage.getItem('username') === user.username)
     // ) {
     //   setLoggedIn(false);
     // }
     get(`${apiUrl}/messages`, currentUser.username).then(messages => {
-      console.log('messages: ', messages);
       setMessages(messages);
     });
   }, [dbUpdate]);

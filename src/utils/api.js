@@ -1,8 +1,6 @@
 import axios from 'axios';
 
 export const get = async (url, token) => {
-  console.log('url: ', url);
-
   const value = await axios
     .get(url, {
       params: {
@@ -10,13 +8,13 @@ export const get = async (url, token) => {
       },
     })
     .then(response => {
-      console.log('GET-response: ', response);
+      // console.log('GET-response: ', response);
 
       return response && response.data;
     })
     .catch(error => {
-      console.log('GET-error: ', error);
-      return error;
+      console.error('GET-error: ', error);
+      return { error: error };
     });
   return value;
 };
@@ -33,8 +31,8 @@ export const create = async (url, body, token) => {
       return response && response.data;
     })
     .catch(error => {
-      console.log('POST-error: ', error);
-      return error;
+      console.error('POST-error: ', error);
+      return { error: error };
     });
   return value;
 };
@@ -51,8 +49,8 @@ export const update = async (url, body, token) => {
       return response && response.data;
     })
     .catch(error => {
-      console.log('PUT-error: ', error);
-      return error;
+      console.error('PUT-error: ', error);
+      return { error: error };
     });
 
   return value;
@@ -66,8 +64,8 @@ export const remove = async (url, token) => {
       return response && response.data;
     })
     .catch(error => {
-      console.log('DELETE-error: ', error);
-      return error;
+      console.error('DELETE-error: ', error);
+      return { error: error };
     });
   return value;
 };
