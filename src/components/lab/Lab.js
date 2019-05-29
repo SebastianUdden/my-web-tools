@@ -149,34 +149,36 @@ export const Lab = () => {
         Translate{axis}: {translatePosition[axis.toLowerCase()]}
       </p>
       {sortedTasks &&
-        sortedTasks.map((t, index) => (
-          <Wrapper id={t.name + index} key={t.name}>
-            <Draggable
-              onDragStart={position => handleDragStart(position, t.name)}
-              onDrag={position => handleDrag(position, t.name)}
-              onDragOver={e => e.preventDefault()}
-              onDragEnd={() => handleDragEnd(translatePosition)}
-            >
-              <Square id={t.name} backgroundColor={t.bgcolor}>
-                {t.rank}: {t.name}{' '}
-                {document.getElementById(t.name) &&
-                  offset(document.getElementById(t.name)).top}
-              </Square>
-            </Draggable>
-          </Wrapper>
+        sortedTasks.map(t => (
+          <Draggable
+            key={t.name}
+            onDragStart={position => handleDragStart(position, t.name)}
+            onDrag={position => handleDrag(position, t.name)}
+            onDragOver={e => e.preventDefault()}
+            onDragEnd={() => handleDragEnd(translatePosition)}
+            draggableStyle={{
+              backgroundColor: colors.darkishGrey,
+              margin: '1rem 0',
+              padding: '1rem',
+              width: '100%',
+              zIndex: '20',
+            }}
+          >
+            <div id={t.name}>
+              {t.rank}: {t.name}{' '}
+              {document.getElementById(t.name) &&
+                offset(document.getElementById(t.name)).top}
+            </div>
+          </Draggable>
         ))}
     </LabWrapper>
   );
 };
 
-const Wrapper = styled.div`
-  color: ${p => p.choosenOne && 'orange'};
-  touch-action: pan-y;
-`;
-
 const LabWrapper = styled.div`
   width: 90%;
   touch-action: pan-y;
+  z-index: 10;
 `;
 
 const Square = styled.div`
@@ -184,4 +186,5 @@ const Square = styled.div`
   margin: 1rem 0;
   padding: 1rem;
   width: 100%;
+  z-index: 20;
 `;

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { colors } from '../../constants/colors';
 
 export default class Draggable extends React.Component {
   state = {
@@ -178,7 +179,7 @@ export default class Draggable extends React.Component {
   };
 
   render() {
-    const { children } = this.props;
+    const { children, draggableStyle } = this.props;
     const { translateX, translateY, isDragging } = this.state;
     return (
       <Container
@@ -189,6 +190,7 @@ export default class Draggable extends React.Component {
         x={translateX}
         y={translateY}
         isDragging={isDragging}
+        style={draggableStyle}
       >
         {children}
       </Container>
@@ -203,11 +205,20 @@ const Container = styled.div.attrs({
 })`
   touch-action: none;
   cursor: grab;
+  transition: color 0.3s ease-out;
+  transition: opacity 0.3s ease-out;
 
   ${({ isDragging }) =>
-    isDragging &&
-    css`
-      opacity: 0.8;
-      cursor: grabbing;
-    `};
+    isDragging
+      ? css`
+          position: relative;
+          z-index: 2500;
+          color: orange;
+          /* border: 1px solid orange; */
+          opacity: 0.8;
+          cursor: grabbing;
+        `
+      : css`
+          z-index: 40;
+        `};
 `;
