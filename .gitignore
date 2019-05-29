@@ -1,5 +1,5 @@
 /.env.development
-
+.env.development
 # Logs
 logs
 *.log
