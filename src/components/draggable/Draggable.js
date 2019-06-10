@@ -30,7 +30,7 @@ export default class Draggable extends React.Component {
     window.addEventListener('touchend', this.handleTouchEnd);
 
     if (this.props.onDragStart) {
-      console.log(e.touches[0]);
+      // console.log(e.touches[0]);
       this.props.onDragStart({
         x: e.touches[0].clientX,
         y: e.touches[0].clientY,
@@ -92,7 +92,6 @@ export default class Draggable extends React.Component {
 
   handleTouchEnd = e => {
     e.stopPropagation();
-    e.preventDefault();
     window.removeEventListener('touchmove', this.handleTouchMove);
     window.removeEventListener('touchend', this.handleTouchEnd);
 
@@ -202,6 +201,8 @@ const Container = styled.div.attrs({
     transform: `translate(${x}px, ${y}px)`,
   }),
 })`
+  padding: 0 !important;
+  margin: 0;
   touch-action: none;
   cursor: grab;
   transition: color 0.3s ease-out;
@@ -213,7 +214,6 @@ const Container = styled.div.attrs({
           position: relative;
           z-index: 2500;
           color: orange;
-          /* border: 1px solid orange; */
           opacity: 0.8;
           cursor: grabbing;
         `

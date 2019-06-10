@@ -11,7 +11,7 @@ import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
 
-const tabs = ['Users', 'Chat', 'Habits', 'Lab'];
+const tabs = ['Users', 'Chat', 'Habits'];
 
 export const Main = () => {
   const [tab, setTab] = useState('Welcome');
@@ -103,8 +103,10 @@ export const Main = () => {
               {tab === 'Chat' && (
                 <Chat users={users} currentUser={currentUser} />
               )}
-              {tab === 'Habits' && <Habits />}
-              {tab === 'Lab' && <Lab />}
+              {tab === 'Habits' && (
+                <Habits users={users} currentUser={currentUser} />
+              )}
+              {/* {tab === 'Lab' && <Lab />} */}
             </MainWrapper>
           </>
         )}

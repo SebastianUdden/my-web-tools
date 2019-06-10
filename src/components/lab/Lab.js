@@ -74,7 +74,6 @@ const LabWrapper = styled.div`
 const Square = styled.div`
   background-color: ${p => colors.darkishGrey};
   margin: 1rem 0;
-  padding: 1rem;
   width: 100%;
   z-index: 20;
 `;

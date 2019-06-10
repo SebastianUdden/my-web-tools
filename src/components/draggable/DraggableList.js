@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Draggable from './Draggable';
 import { colors } from '../../constants/colors';
+import { Habit } from '../habits/Habit';
+import { prepend } from '../../utils/helpers';
 
 const offset = el => {
   const rect = el.getBoundingClientRect();
@@ -19,13 +21,22 @@ const compare = (a, b) => {
   return 0;
 };
 
-export const DraggableList = ({ listData }) => {
-  const [list, setList] = useState(listData);
+export const DraggableList = ({
+  listData,
+  onListUpdate,
+  currentUser,
+  setListOrder,
+}) => {
+  const [list, setList] = useState(listData || ['hello']);
   const [translatePosition, setTranslatePosition] = useState({});
-  const [originalPosition, setOriginalPosition] = useState({});
+  const [, setOriginalPosition] = useState({});
   const [dropY, setDropY] = useState(0);
   const [currentDrop, setCurrentDrop] = useState(undefined);
   const [axis] = useState('Y');
+
+  useEffect(() => {
+    setList(listData);
+  }, [listData]);
 
   const handleDragStart = (position, name) => {
     if (!position) return;
@@ -33,6 +44,29 @@ export const DraggableList = ({ listData }) => {
       name,
       ...position,
     });
+  };
+
+  const onAddOccasion = name => {
+    onListUpdate(
+      list.map(l => {
+        if (l.name === name) {
+          return {
+            ...l,
+            occasions: prepend(new Date(), l.occasions),
+          };
+        } else {
+          return l;
+        }
+      })
+    );
+  };
+
+  const onDeleteHabit = id => {
+    onListUpdate(
+      list
+        .filter(l => l._id !== id)
+        .map((l, index) => ({ ...l, rank: index + 1 }))
+    );
   };
 
   const handleDrag = (position, name) => {
@@ -76,12 +110,19 @@ export const DraggableList = ({ listData }) => {
 
   const handleDragEnd = position => {
     const currentIndex = list.findIndex(t => t.name === position.name);
-    setList(list.map((t, i) => moveRank(list, t, i, currentIndex)));
+    const rankedList = list.map((t, i) => moveRank(list, t, i, currentIndex));
+    setList(rankedList);
+    setListOrder(rankedList);
   };
 
   useEffect(() => {
-    currentDrop &&
-      setList(list.map(t => (t.name === currentDrop.name ? currentDrop : t)));
+    if (currentDrop) {
+      const currentDropList = list.map(t =>
+        t.name === currentDrop.name ? currentDrop : t
+      );
+      setList(currentDropList);
+      setListOrder(currentDropList);
+    }
   }, [currentDrop]);
   const sortedTasks = list.sort(compare);
 
@@ -103,13 +144,19 @@ export const DraggableList = ({ listData }) => {
               zIndex: '20',
             }}
           >
-            <div id={t.name}>
-              {t.rank}: {t.name}{' '}
-              {/* {document.getElementById(t.name) &&
-                offset(document.getElementById(t.name)).top} */}
-            </div>
+            <Habit
+              habit={t}
+              addOccasion={onAddOccasion}
+              deleteHabit={onDeleteHabit}
+              currentUser={currentUser}
+            />
           </Draggable>
         ))}
     </>
   );
+};
+
+DraggableList.defaultProps = {
+  listData: [],
+  onListUpdate: () => {},
 };

@@ -1,216 +1,177 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { apiUrl } from '../../constants/urls';
 import { colors } from '../../constants/colors';
+import { formatDateTime } from '../../utils/helpers';
+import { remove } from '../../utils/api';
 
-export const Habit = ({
-  name,
-  description,
-  occasions,
-  orderedHabits,
-  setOrderedHabits,
-}) => {
+export const Habit = ({ habit, addOccasion, deleteHabit, currentUser }) => {
+  const { name, title, description, rank, occasions } = habit;
   const [expandedView, setExpandedView] = useState(false);
-  const [expandLatest, setExpandLatest] = useState([
-    occasions[0].toLocaleDateString(),
-  ]);
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [draggedOverItem, setDraggedOverItem] = useState(null);
-  const [draggedIdx, setDraggedIdx] = useState(null);
-
-  const priority = orderedHabits
-    .map((habit, index) => {
-      if (!habit) return null;
-      if (habit.name === name) {
-        return index + 1;
-      }
-      return null;
-    })
-    .filter(prio => typeof prio === 'number')[0];
-
-  const onDragStart = (e, index) => {
-    setDraggedItem(orderedHabits[index]);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', e.target.parentNode);
-    e.dataTransfer.setDragImage(e.target.parentNode, 300, 20);
-  };
-
-  const onDragOver = index => {
-    setDraggedOverItem(orderedHabits[index]);
-
-    // if the item is dragged over itself, ignore
-    if (draggedItem === draggedOverItem) {
-      return;
-    }
-
-    // filter out the currently dragged item
-    let items = orderedHabits.filter(item => item !== draggedItem);
-    // add the dragged item after the dragged over item
-    items.splice(index, 0, draggedItem);
-
-    setOrderedHabits(items);
-  };
-
-  const onDragEnd = () => {
-    setDraggedIdx(null);
-  };
+  const [expandLatest, setExpandLatest] = useState(false);
 
   return (
-    <Container onDragOver={() => onDragOver(draggedIdx)}>
+    <Container id={name}>
       <HabitWrapper onClick={() => setExpandedView(!expandedView)}>
         <Row>
-          <Priority>{priority}</Priority>
-          <TopInfo>
-            <Name>{name}</Name>
+          <TopInfoLeft>
+            <Rank>{rank}</Rank>
+            <TitleTimeWrapper>
+              <Title>{title}</Title>
+              <Time>{formatDateTime(occasions[0], true)}</Time>
+            </TitleTimeWrapper>
+          </TopInfoLeft>
+          <TopInfoRight>
             <div>
-              <Add>&#x2b;</Add>
-              {/* <Delete onClick={() => alert(`Deleting: ${name}`)}>&#x2715;</Delete> */}
-            </div>
-          </TopInfo>
-        </Row>
-        <UL expandedView={expandedView}>
-          {expandLatest.length < 2 && (
-            <Latest
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                setExpandLatest(
-                  occasions.map(
-                    (occasion, index) =>
-                      index < 10 && occasion.toLocaleDateString()
-                  )
-                );
-              }}
-            >
-              {expandLatest}
-            </Latest>
-          )}
-          {expandLatest &&
-            expandLatest.length > 2 &&
-            expandLatest.map(latest => (
-              <Latest
+              <Add
                 onClick={e => {
-                  e.preventDefault();
                   e.stopPropagation();
-                  setExpandLatest([occasions[0].toLocaleDateString()]);
+                  addOccasion(name);
                 }}
               >
-                {latest}
-              </Latest>
-            ))}
-        </UL>
+                &#x2b;
+              </Add>
+              {expandedView && (
+                <DeleteButton
+                  onClick={e => {
+                    e.preventDefault();
+                    remove(
+                      `${apiUrl}/habits/${habit._id}`,
+                      currentUser.username
+                    ).then(response => {
+                      deleteHabit(habit._id);
+                    });
+                  }}
+                >
+                  &#x2715;
+                </DeleteButton>
+              )}
+            </div>
+          </TopInfoRight>
+        </Row>
         {expandedView && (
-          <>
+          <ExpandedContent>
             <Description>{description}</Description>
-          </>
+            <UL>
+              {expandLatest ? (
+                occasions.map(
+                  (occasion, index) =>
+                    index < 10 && (
+                      <LI
+                        key={occasion + '-' + index}
+                        onClick={e => {
+                          e.stopPropagation();
+                          setExpandLatest(!expandLatest);
+                        }}
+                      >
+                        {formatDateTime(occasion)}
+                      </LI>
+                    )
+                )
+              ) : (
+                <LI
+                  onClick={e => {
+                    e.stopPropagation();
+                    setExpandLatest(!expandLatest);
+                  }}
+                >
+                  Show history
+                </LI>
+              )}
+            </UL>
+          </ExpandedContent>
         )}
       </HabitWrapper>
-      <ReorderWrapper
-        draggable
-        onDragStart={e => onDragStart(e, priority - 1)}
-        onDragEnd={onDragEnd}
-      >
-        <Arrow
-          onClick={() =>
-            setOrderedHabits(filterHabits(true, priority, orderedHabits))
-          }
-        >
-          &#x21e7;
-        </Arrow>
-        <Arrow
-          onClick={() =>
-            setOrderedHabits(filterHabits(false, priority, orderedHabits))
-          }
-        >
-          &#x21e9;
-        </Arrow>
-      </ReorderWrapper>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
-  margin: 0.5rem;
+  padding: 0.6rem;
 `;
 
 const HabitWrapper = styled.div`
-  padding: 1rem;
-  background-color: ${colors.darkGrey};
   cursor: pointer;
-`;
-
-const ReorderWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: stretch;
-`;
-
-const Description = styled.p``;
-
-const Row = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0;
-  margin: 0 0 0.2rem;
-  border-bottom: 1px solid white;
-`;
-
-const TopInfo = styled.div`
+  width: 100%;
   min-width: 16rem;
+`;
+
+const TopInfoLeft = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const TopInfoRight = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0;
   margin: 0;
 `;
 
-const Priority = styled.span`
+const Rank = styled.span`
   border: 1px solid ${colors.white};
   border-radius: 5rem;
-  padding: 0.2rem 0.7rem;
+  padding: 0.2rem 0.6rem;
   margin-right: 0.5rem;
   margin-top: -0.3rem;
-  margin-bottom: 0.7rem;
 `;
 
-const Name = styled.label`
+const TitleTimeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+const Title = styled.label`
   color: ${colors.white};
   margin-right: 0.5rem;
+  line-height: 1rem;
 `;
-const Latest = styled.li`
-  margin: 0;
-  color: ${colors.brightGrey};
+const Time = styled.label`
+  color: ${colors.orange};
+  font-size: small;
 `;
+
 const Add = styled.button`
   background-color: ${colors.brightGrey};
   padding: 0.2rem 0.8rem 0;
   border: none;
   color: ${colors.white};
-  /* margin-right: 0.6rem; */
   border-radius: 0.2rem;
 `;
-// const Delete = styled.label``;
 
-const Arrow = styled.button`
-  background-color: ${colors.brightGrey};
-  border: 1px solid red;
-  padding: 0.5rem;
-  height: 100%;
-  border: none;
-  color: ${colors.white};
-  font-size: x-small;
+const Description = styled.p`
+  margin: 0.5rem 0;
+`;
+
+const Row = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const UL = styled.ul`
-  margin: ${p => (p.expandedView ? '1rem' : '0 1rem')};
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+`;
+const LI = styled.li`
+  color: ${colors.orange};
+  font-size: small;
+  margin: 0;
+  padding: 0;
 `;
 
-const filterHabits = (directionUp, priority, orderedHabits) => {
-  const direction = directionUp ? 2 : 0;
-  const sliced = orderedHabits.slice(priority - 1, priority)[0];
-  const filtered = orderedHabits.filter(
-    (habit, index) => (directionUp && index === 0) || index !== priority - 1
-  );
-  priority - direction >= 0 && filtered.splice(priority - direction, 0, sliced);
-  return filtered;
-};
+const ExpandedContent = styled.div`
+  margin-top: 0.5rem;
+  border-top: 1px solid #3b3b3b;
+`;
+
+const DeleteButton = styled.span`
+  color: ${colors.white};
+  border-radius: 1rem;
+  margin-left: 0.5rem;
+  padding: 0 0.3rem;
+  :hover {
+    color: ${colors.white};
+  }
+`;
