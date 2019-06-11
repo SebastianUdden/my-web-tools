@@ -2,7 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 
-export const ResizableTextarea = ({ value, setValue, rows, setRows }) => {
+export const ResizableTextarea = ({
+  value,
+  setValue,
+  rows,
+  setRows,
+  placeholder,
+  id,
+}) => {
   const minRows = 1;
   const maxRows = 25;
 
@@ -28,8 +35,8 @@ export const ResizableTextarea = ({ value, setValue, rows, setRows }) => {
 
   return (
     <Input
-      id="ChatInput"
-      placeholder="Message..."
+      id={id}
+      placeholder={placeholder}
       rows={rows}
       value={value}
       onChange={handleChange}

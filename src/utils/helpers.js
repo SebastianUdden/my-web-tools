@@ -17,9 +17,10 @@ export const pad = (num, size) => {
 };
 
 export const formatDateTime = (dt, hideTime) => {
+  if (!dt) return '--/--/----';
   const dateTime = new Date(dt);
   const date = dateTime.toLocaleDateString();
   const hour = dateTime.getHours();
   const minute = dateTime.getMinutes();
-  return `${date}${hideTime ? '' : `, ${pad(hour, 2)}:${pad(minute, 2)}`}`;
+  return `${date}${hideTime ? '' : ` - ${pad(hour, 2)}:${pad(minute, 2)}`}`;
 };

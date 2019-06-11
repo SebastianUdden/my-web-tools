@@ -6,7 +6,7 @@ import { apiUrl } from '../../constants/urls';
 import { ResizableTextarea } from './ResizableTextarea';
 import { useKeyPress } from '../../hooks/useKeyPress';
 
-const scrollToBottom = (setValue, setRows) => {
+export const scrollToBottom = (setValue, setRows) => {
   setTimeout(() => {
     setValue('');
     setRows(1);
@@ -87,19 +87,6 @@ const ChatInputWrapper = styled.div`
   left: 0;
   right: 0;
 `;
-
-// const Input = styled.textarea`
-//   width: 100%;
-//   min-width: 50vw;
-//   padding: 0.5rem;
-//   background-color: ${colors.darkerGrey};
-//   color: ${colors.white};
-//   border: none;
-//   border-bottom: 1px solid ${colors.white};
-//   outline: none;
-//   border: 1px solid red;
-//   height: 100%;
-// `;
 
 const Button = styled.button`
   padding: 0.6rem 0.6rem;
