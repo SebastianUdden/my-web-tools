@@ -100,7 +100,9 @@ export const Habits = ({ users, currentUser }) => {
           />
         )}
       </ListContainer>
-      <Button onClick={() => onListUpdate(listOrder)}>Save order</Button>
+      <SaveOrderButton onClick={() => onListUpdate(listOrder)}>
+        Save order
+      </SaveOrderButton>
       <InputWrapper>
         <ResizableTextarea
           id="HabitInput"
@@ -142,6 +144,10 @@ const InputWrapper = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+`;
+
+const SaveOrderButton = styled(Button)`
+  margin-bottom: 5rem;
 `;
 
 const InputButton = styled.button`
