@@ -53,7 +53,6 @@ export const Habits = ({ users, currentUser }) => {
   }, []);
 
   const onListUpdate = list => {
-    console.log('TheList: ', list);
     list.forEach(h => {
       update(`${apiUrl}/habits/${h._id}`, h, currentUser.username);
     });
@@ -62,7 +61,9 @@ export const Habits = ({ users, currentUser }) => {
 
   const onCreateHabit = h => {
     create(`${apiUrl}/habits`, h, currentUser.username).then(response => {
-      console.log('Response: ', response);
+      get(`${apiUrl}/habits`, currentUser.username).then(habits => {
+        setListOrder(habits);
+      });
       document.getElementById('HabitInput').focus();
       setTimeout(() => scrollToBottom(setValue, setRows), 200);
       setTimeout(() => setDoOnce(false), 1000);

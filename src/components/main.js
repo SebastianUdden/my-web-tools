@@ -5,13 +5,13 @@ import { Chat } from './chat/Chat';
 import { LoginForm } from './login/LoginForm';
 import { Welcome } from './welcome/Welcome';
 import { Habits } from './habits/Habits.js';
-import { Lab } from './lab/Lab.js';
 import { SignupForm } from './signup/SignupForm';
 import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
+import { ReMemory } from './reMemory/ReMemory';
 
-const tabs = ['Users', 'Chat', 'Habits'];
+const tabs = ['Users', 'Chat', 'Habits', 'ReMemory'];
 
 export const Main = () => {
   const [tab, setTab] = useState('Welcome');
@@ -106,6 +106,7 @@ export const Main = () => {
               {tab === 'Habits' && (
                 <Habits users={users} currentUser={currentUser} />
               )}
+              {tab === 'ReMemory' && <ReMemory />}
               {/* {tab === 'Lab' && <Lab />} */}
             </MainWrapper>
           </>

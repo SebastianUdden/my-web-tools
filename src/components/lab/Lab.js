@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { colors } from '../../constants/colors';
 import { DraggableList } from '../draggable/DraggableList';
 
 const TASKS = [
@@ -69,11 +68,4 @@ const LabWrapper = styled.div`
   width: 90%;
   touch-action: pan-y;
   z-index: 10;
-`;
-
-const Square = styled.div`
-  background-color: ${p => colors.darkishGrey};
-  margin: 1rem 0;
-  width: 100%;
-  z-index: 20;
 `;

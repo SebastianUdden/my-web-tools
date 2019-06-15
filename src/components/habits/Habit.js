@@ -7,12 +7,55 @@ import { formatDateTime } from '../../utils/helpers';
 import { remove, update } from '../../utils/api';
 
 export const Habit = ({ habit, addOccasion, deleteHabit, currentUser }) => {
-  const { name, title, description: desc, rank, occasions } = habit;
+  const { name, title, description: desc, rank, occasions: occ } = habit;
+  const [occasions, setOccasions] = useState(occ);
   const [expandedView, setExpandedView] = useState(false);
-  const [expandLatest, setExpandLatest] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [editDescription, setEditDescription] = useState(false);
   const [temporaryDescription, setTemporaryDescription] = useState(desc);
   const [description, setDescription] = useState(desc);
+  const [showNote, setShowNote] = useState(false);
+  const [note, setNote] = useState('');
+
+  const onUpdateOccasion = (id, note) => {
+    occasions &&
+      setOccasions(
+        occasions.map(o => {
+          if (o._id === id) {
+            return { ...o, note: note };
+          } else {
+            return o;
+          }
+        })
+      );
+    update(
+      `${apiUrl}/habits/${habit._id}`,
+      {
+        ...habit,
+        occasions: occasions
+          ? occasions.map(o => {
+              if (o._id === id) {
+                return { ...o, note: note };
+              } else {
+                return o;
+              }
+            })
+          : [],
+      },
+      currentUser.username
+    );
+  };
+  const onDeleteOccasion = id => {
+    occasions && setOccasions(occasions.filter(o => o._id !== id));
+    update(
+      `${apiUrl}/habits/${habit._id}`,
+      {
+        ...habit,
+        occasions: occasions ? occasions.filter(o => o._id !== id) : [],
+      },
+      currentUser.username
+    );
+  };
 
   return (
     <Container id={name}>
@@ -22,21 +65,47 @@ export const Habit = ({ habit, addOccasion, deleteHabit, currentUser }) => {
             <Rank>{rank}</Rank>
             <TitleTimeWrapper>
               <Title>{title}</Title>
-              <Time>{formatDateTime(occasions[0], true)}</Time>
+              <Time>
+                {occasions.length !== 0 &&
+                  formatDateTime(occasions[0].time, true)}
+              </Time>
             </TitleTimeWrapper>
           </TopInfoLeft>
           <TopInfoRight>
             <div>
-              <Add
-                onClick={e => {
-                  e.stopPropagation();
-                  addOccasion(name);
-                }}
-              >
-                &#x2b;
-              </Add>
+              {!showNote && (
+                <Add
+                  onClick={e => {
+                    e.stopPropagation();
+                    setShowNote(true);
+                  }}
+                >
+                  &#x2b;
+                </Add>
+              )}
+              {showNote && (
+                <>
+                  <Add
+                    onClick={e => {
+                      e.stopPropagation();
+                      addOccasion(name, note);
+                      setShowNote(false);
+                    }}
+                  >
+                    &#10003;
+                  </Add>
+                  <Add
+                    onClick={e => {
+                      e.stopPropagation();
+                      setShowNote(false);
+                    }}
+                  >
+                    &#x2715;
+                  </Add>
+                </>
+              )}
               {expandedView && (
-                <DeleteButton
+                <Delete
                   onClick={e => {
                     e.preventDefault();
                     remove(
@@ -48,11 +117,18 @@ export const Habit = ({ habit, addOccasion, deleteHabit, currentUser }) => {
                   }}
                 >
                   &#x2715;
-                </DeleteButton>
+                </Delete>
               )}
             </div>
           </TopInfoRight>
         </Row>
+        {showNote && (
+          <Row>
+            <ExpandedContent style={{ width: '100%' }}>
+              <LargeNoteInput onChange={e => setNote(e.target.value)} />
+            </ExpandedContent>
+          </Row>
+        )}
         {expandedView && (
           <ExpandedContent>
             {!editDescription && (
@@ -100,29 +176,36 @@ export const Habit = ({ habit, addOccasion, deleteHabit, currentUser }) => {
             )}
             {occasions.length !== 0 && (
               <UL>
-                {expandLatest ? (
-                  occasions.map(
-                    (occasion, index) =>
-                      index < 10 && (
-                        <LI
-                          key={occasion + '-' + index}
-                          onClick={e => {
-                            e.stopPropagation();
-                            setExpandLatest(!expandLatest);
-                          }}
-                        >
-                          {formatDateTime(occasion)}
-                        </LI>
-                      )
-                  )
+                {showHistory ? (
+                  <>
+                    {occasions.map(
+                      (occasion, index) =>
+                        index < 10 && (
+                          <Occasion
+                            occasion={occasion}
+                            index={index}
+                            onUpdateOccasion={onUpdateOccasion}
+                            onDeleteOccasion={onDeleteOccasion}
+                          />
+                        )
+                    )}
+                    <LI
+                      onClick={e => {
+                        e.stopPropagation();
+                        setShowHistory(false);
+                      }}
+                    >
+                      <SlimButton>Hide history</SlimButton>
+                    </LI>
+                  </>
                 ) : (
                   <LI
                     onClick={e => {
                       e.stopPropagation();
-                      setExpandLatest(!expandLatest);
+                      setShowHistory(true);
                     }}
                   >
-                    Show history
+                    <SlimButton>Show history</SlimButton>
                   </LI>
                 )}
               </UL>
@@ -186,8 +269,15 @@ const Time = styled.label`
 `;
 
 const Add = styled(Button)`
+  margin-left: 0.5rem;
   padding: 0.2rem 0.8rem 0;
   border-radius: 0.2rem;
+  opacity: 0.8;
+
+  :hover {
+    cursor: pointer;
+    opacity: 1;
+  }
 `;
 
 const Description = styled.p`
@@ -230,10 +320,19 @@ const UL = styled.ul`
   margin: 0;
 `;
 const LI = styled.li`
-  color: ${colors.orange};
   font-size: small;
   margin: 0;
   padding: 0;
+`;
+
+const Em = styled.span`
+  color: ${colors.orange};
+`;
+
+const SlimButton = styled.span`
+  :hover {
+    color: ${colors.orange};
+  }
 `;
 
 const ExpandedContent = styled.div`
@@ -241,12 +340,64 @@ const ExpandedContent = styled.div`
   border-top: 1px solid #3b3b3b;
 `;
 
-const DeleteButton = styled.span`
-  color: ${colors.white};
-  border-radius: 1rem;
-  margin-left: 0.5rem;
-  padding: 0 0.3rem;
-  :hover {
-    color: ${colors.white};
-  }
+const Delete = styled(Add)`
+  background-color: #a40000;
 `;
+
+const DeleteSymbol = styled(Add)`
+  background-color: inherit;
+  padding: 0;
+  margin: 0;
+  margin-left: 0.5rem;
+`;
+
+const NoteInput = styled.input`
+  background-color: inherit;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid ${colors.orange};
+  color: ${colors.orange};
+`;
+
+const LargeNoteInput = styled(NoteInput)`
+  width: 100%;
+`;
+
+const Occasion = ({ occasion, index, onUpdateOccasion, onDeleteOccasion }) => {
+  const [showEdit, setShowEdit] = useState(false);
+  const [note, setNote] = useState(occasion.note);
+
+  return (
+    <LI
+      key={occasion.time + '-' + index}
+      onClick={e => {
+        e.stopPropagation();
+        setShowEdit(!showEdit);
+        showEdit && onUpdateOccasion(occasion._id, note);
+      }}
+    >
+      <Em>
+        {formatDateTime(occasion.time)}
+        {occasion.note && ':'}
+      </Em>{' '}
+      {!showEdit && occasion.note}
+      {showEdit && (
+        <>
+          <NoteInput
+            value={note}
+            onClick={e => e.stopPropagation()}
+            onChange={e => setNote(e.target.value)}
+          />
+          <DeleteSymbol
+            onClick={e => {
+              e.stopPropagation();
+              onDeleteOccasion(occasion._id);
+            }}
+          >
+            &#x2715;
+          </DeleteSymbol>
+        </>
+      )}
+    </LI>
+  );
+};

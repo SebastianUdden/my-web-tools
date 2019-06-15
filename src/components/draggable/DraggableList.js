@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Draggable from './Draggable';
 import { colors } from '../../constants/colors';
 import { Habit } from '../habits/Habit';
-import { prepend } from '../../utils/helpers';
+import { prepend, uuidv4 } from '../../utils/helpers';
 
 const offset = el => {
   const rect = el.getBoundingClientRect();
@@ -32,7 +32,7 @@ export const DraggableList = ({
   const [, setOriginalPosition] = useState({});
   const [dropY, setDropY] = useState(0);
   const [currentDrop, setCurrentDrop] = useState(undefined);
-  const [axis] = useState('Y');
+  // const [axis] = useState('Y');
 
   useEffect(() => {
     setList(listData);
@@ -46,13 +46,16 @@ export const DraggableList = ({
     });
   };
 
-  const onAddOccasion = name => {
+  const onAddOccasion = (name, note) => {
     onListUpdate(
       list.map(l => {
         if (l.name === name) {
           return {
             ...l,
-            occasions: prepend(new Date(), l.occasions),
+            occasions: prepend(
+              { _id: uuidv4(), time: new Date(), note },
+              l.occasions
+            ),
           };
         } else {
           return l;
