@@ -138,8 +138,8 @@ const Tab = styled.button`
   background-color: ${p => (p.selected ? colors.brightGrey : colors.darkGrey)};
   color: ${colors.white};
   width: 100%;
-  padding: 0.8rem 0;
-  margin: 1rem 0.5rem;
+  padding: 0.2rem 0.5rem;
+  margin: 1rem 0.2rem;
   border: none;
 
   :hover {

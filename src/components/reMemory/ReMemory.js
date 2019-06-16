@@ -1,132 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
-import { uuidv4 } from '../../utils/helpers';
+import { getMemories } from '../../utils/mockData';
 
-const mockMemory = [
-  {
-    _id: uuidv4(),
-    name: 'Sports',
-    description: 'Collection of all sports related memories',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['Categories'],
-    children: [],
-    linked: [],
-  },
-  {
-    _id: uuidv4(),
-    name: 'Celebrations',
-    description: 'Collection of all celebration related memories',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['Categories'],
-    children: [],
-    linked: [],
-  },
-  {
-    _id: uuidv4(),
-    name: 'Padel with Sofia, Alex & Alex',
-    description: 'Play padel at pdlcenter',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['sports', 'sofia', 'alex', 'friends', 'padel', 'stockholm'],
-    children: [],
-    linked: [],
-  },
-  {
-    _id: uuidv4(),
-    name: 'Midsummer in hartung',
-    description: 'Celebrate with Sofia and the family. Also meet Alex & Alex.',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['celebrations', 'sofia', 'alex', 'family', 'sundsvall', 'midsummer'],
-    children: [],
-    linked: [],
-  },
-  {
-    _id: uuidv4(),
-    name: 'Office party',
-    description: 'Festival themed office party at Trädgården.',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['celebrations', 'trädgården', 'festival', 'theme party'],
-    children: [],
-    linked: [],
-  },
-  {
-    _id: uuidv4(),
-    name: 'Bup',
-    description: '.',
-    createdAt: new Date('2019-06-22'),
-    updatedAt: new Date('2019-06-22'),
-    dueDate: new Date('2019-06-25'),
-    tags: ['dup', 'sports'],
-    children: [],
-    linked: [],
-  },
-];
-
-mockMemory.map(memory =>
-  memory.children.push(
-    ...mockMemory.filter(m =>
-      m.tags.some(tag => tag.includes(memory.name.toLowerCase()))
-    )
-  )
-);
+const getLinksOfType = (memories, memoryIndex, links, name) => {
+  if (!links.length) return undefined;
+  return links
+    .filter(link => link.name === name)
+    .map(link => memories[memoryIndex.indexOf(link.linkedId)]);
+};
 
 export const ReMemory = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [memories, setMemories] = useState(getMemories());
   const q = searchQuery.toLowerCase();
+
+  useEffect(() => {
+    const memoryIndex = memories.map(m => m._id);
+    setMemories(
+      memories.map(memory => ({
+        ...memory,
+        children: getLinksOfType(memories, memoryIndex, memory.links, 'child'),
+        parents: getLinksOfType(memories, memoryIndex, memory.links, 'parent'),
+      }))
+    );
+  }, []);
+
+  const sortedMemories = memories.sort();
+
   return (
-    <div>
-      <Header>ReMemory</Header>
-      <Body>
-        <SearchWrapper>
-          <Search
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-          <Remove>&times;</Remove>
-        </SearchWrapper>
-        <SearchResults>
-          {mockMemory.map(m => {
-            return (
-              (m.name.toLowerCase().includes(q) ||
-                m.description.toLowerCase().includes(q) ||
-                m.tags.some(tag => tag.includes(q))) && (
-                <LI>
-                  <Em>{m.name}</Em>
-                  <Tags>
-                    {m.tags
-                      .filter(t => t.includes(q))
-                      .map(t => (
-                        <Tag onClick={() => setSearchQuery(t)}>{t}</Tag>
-                      ))}
-                  </Tags>
-                  {m.description}
-                  <Tags>
-                    {m.children.map(c => (
-                      <Child onClick={() => setSearchQuery(c.name)}>
-                        {c.name}
-                      </Child>
-                    ))}
-                  </Tags>
-                </LI>
-              )
-            );
-          })}
-        </SearchResults>
-      </Body>
-    </div>
+    <>
+      <Container>
+        <Header>ReMemory</Header>
+        <Body>
+          <SearchWrapper>
+            <Search
+              id="SearchField"
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            <Remove
+              onClick={() => {
+                setSearchQuery('');
+                document.getElementById('SearchField').focus();
+              }}
+            >
+              &times;
+            </Remove>
+          </SearchWrapper>
+          <SearchResults>
+            {sortedMemories &&
+              sortedMemories.map(m => {
+                return (
+                  (m.name.toLowerCase().includes(q) ||
+                    m.description.toLowerCase().includes(q) ||
+                    m.tags.some(tag => tag.includes(q))) && (
+                    <LI>
+                      {m.parents && (
+                        <Parents>
+                          <Em>{m.name}</Em>
+                          {m.parents.map(c => (
+                            <Parent onClick={() => setSearchQuery(c.name)}>
+                              {c.name}
+                            </Parent>
+                          ))}
+                        </Parents>
+                      )}
+                      {!m.parents && <Em>{m.name}</Em>}
+                      <Tags>
+                        {m.tags.map(t => (
+                          <Tag onClick={() => setSearchQuery(t)}>{t}</Tag>
+                        ))}
+                      </Tags>
+                      {m.description}
+                      {m.children && (
+                        <Children>
+                          {m.children.map(c => (
+                            <Child onClick={() => setSearchQuery(c.name)}>
+                              {c.name}
+                            </Child>
+                          ))}
+                        </Children>
+                      )}
+                    </LI>
+                  )
+                );
+              })}
+          </SearchResults>
+        </Body>
+      </Container>
+      <Sticky onClick={() => document.getElementById('SearchField').focus()}>
+        <span>&#x2303;</span>
+        <span>&#x2303;</span>
+      </Sticky>
+    </>
   );
 };
+
+const Container = styled.div`
+  max-width: 90vw;
+  margin-bottom: 3rem;
+`;
 
 const Header = styled.h2`
   color: ${colors.brightGrey || 'white'};
@@ -134,7 +109,19 @@ const Header = styled.h2`
 
 const Body = styled.div`
   color: ${colors.brightGrey || 'white'};
-  min-width: 40rem;
+`;
+
+const Sticky = styled.div`
+  border: 1px solid ${colors.darkGrey};
+  color: ${colors.brightGrey};
+  background-color: ${colors.darkerGrey};
+  width: 100vw;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  font-size: larger;
+  padding: 1rem 1rem 0.5rem;
+  bottom: 0;
 `;
 
 const LI = styled.li`
@@ -145,7 +132,7 @@ const LI = styled.li`
 
 const SearchWrapper = styled.div`
   margin: 0 0.2rem;
-  width: 100%;
+  width: 100vw;
 `;
 
 const Search = styled.input`
@@ -155,11 +142,11 @@ const Search = styled.input`
   background-color: inherit;
   padding: 0.1rem 0.5rem;
   width: 98%;
-  max-width: 15rem;
+  max-width: 85vw;
 `;
 
 const Remove = styled.button`
-  margin-left: -1.1rem;
+  margin-left: -1.3rem;
   background-color: inherit;
   border: none;
   color: inherit;
@@ -169,15 +156,22 @@ const SearchResults = styled.ul`
   margin: 0;
 `;
 
-const Tags = styled.p`
+const Tags = styled.div`
   padding: 0.2rem 0;
-  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  div:nth-child(3) {
+    margin-top: -0.01rem;
+    border: 1px solid red;
+  }
 `;
 
 const Tag = styled.span`
   border: 1px solid ${colors.brightGrey};
   padding: 0.1rem 0.5rem;
-  margin: 0 0.2rem;
+  margin: 0.2rem;
   opacity: 0.8;
 
   :hover {
@@ -186,7 +180,12 @@ const Tag = styled.span`
   }
 `;
 
+const Children = styled(Tags)``;
 const Child = styled(Tag)`
+  opacity: 0.3;
+`;
+const Parents = styled(Tags)``;
+const Parent = styled(Tag)`
   opacity: 0.3;
 `;
 
