@@ -106,7 +106,9 @@ export const Main = () => {
               {tab === 'Habits' && (
                 <Habits users={users} currentUser={currentUser} />
               )}
-              {tab === 'ReMemory' && <ReMemory />}
+              {tab === 'ReMemory' && (
+                <ReMemory users={users} currentUser={currentUser} />
+              )}
               {/* {tab === 'Lab' && <Lab />} */}
             </MainWrapper>
           </>
