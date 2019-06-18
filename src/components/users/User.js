@@ -155,11 +155,10 @@ export const User = ({ user, isCurrentUser, updateUsers, setUpdateUsers }) => {
 };
 
 const UserWrapper = styled.div`
-  background-color: ${colors.darkGrey};
-  border-radius: 0.5rem;
+  background-color: ${p =>
+    p.isCurrentUser ? colors.brightGrey : colors.darkGrey};
   padding: ${p => (p.expandedView ? '1rem 0.6rem' : '0 0.5rem')};
   margin: 0.5rem auto;
-  border: ${p => (p.isCurrentUser ? '1px solid white' : 'none')};
   width: 100%;
   max-width: 500px;
   cursor: pointer;
@@ -184,9 +183,6 @@ const AvatarWrapper = styled.div`
 
 const MessageButton = styled.span`
   color: ${colors.white};
-  background-color: ${colors.darkerGrey};
-  border: 1px solid white;
-  border-radius: 0.5rem;
   margin-left: 0.5rem;
   padding: 0.4rem 0.5rem 0.3rem;
   cursor: pointer;

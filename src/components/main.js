@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { StaticQuery, graphql } from 'gatsby';
+import Header from './header';
+
 import { colors } from '../constants/colors';
 import { Chat } from './chat/Chat';
 import { LoginForm } from './login/LoginForm';
@@ -45,76 +48,85 @@ export const Main = () => {
   }, [signUpSuccessful, loginSuccessful, updateUsers]);
 
   return (
-    showSite && (
-      <>
-        {!currentUser && !signup && (
-          <MainWrapper>
-            <LoginForm
-              setSignup={setSignup}
-              signUpSuccessful={signUpSuccessful}
-              setLoginSuccessful={setLoginSuccessful}
-              setCurrentUser={setCurrentUser}
-            />
-          </MainWrapper>
-        )}
-        {!currentUser && signup && (
-          <MainWrapper>
-            <SignupForm
-              setSignUpSuccessful={setSignUpSuccessful}
-              setCurrentUser={setCurrentUser}
-              currentUser={currentUser}
-              setSignup={setSignup}
-            />
-          </MainWrapper>
-        )}
-        {currentUser && (
+    <StaticQuery
+      query={graphql`
+        query SiteTitleQuery {
+          site {
+            siteMetadata {
+              title
+            }
+          }
+        }
+      `}
+      render={data =>
+        showSite && (
           <>
-            <TabWrapper>
-              {tabs &&
-                tabs.map(x => (
-                  <Tab
-                    key={x}
-                    selected={tab === x}
-                    onClick={() => saveTab(x, setTab)}
-                  >
-                    {x}
-                  </Tab>
-                ))}
-              <Tab
-                onClick={() => {
-                  sessionStorage.clear();
-                  setCurrentUser(undefined);
-                  setLoginSuccessful(false);
-                }}
-              >
-                Sign Out
-              </Tab>
-            </TabWrapper>
-            <MainWrapper>
-              {tab === 'Welcome' && <Welcome currentUser={currentUser} />}
-              {tab === 'Users' && (
-                <Users
-                  currentUser={currentUser}
-                  users={users}
-                  updateUsers={updateUsers}
-                  setUpdateUsers={setUpdateUsers}
+            <Header
+              siteTitle={data.site.siteMetadata.title}
+              setCurrentUser={setCurrentUser}
+              setLoginSuccessful={setLoginSuccessful}
+            />
+            {!currentUser && !signup && (
+              <MainWrapper>
+                <LoginForm
+                  setSignup={setSignup}
+                  signUpSuccessful={signUpSuccessful}
+                  setLoginSuccessful={setLoginSuccessful}
+                  setCurrentUser={setCurrentUser}
                 />
-              )}
-              {tab === 'Chat' && (
-                <Chat users={users} currentUser={currentUser} />
-              )}
-              {tab === 'Habits' && (
-                <Habits users={users} currentUser={currentUser} />
-              )}
-              {tab === 'ReMemory' && (
-                <ReMemory users={users} currentUser={currentUser} />
-              )}
-              {/* {tab === 'Lab' && <Lab />} */}
-            </MainWrapper>
+              </MainWrapper>
+            )}
+            {!currentUser && signup && (
+              <MainWrapper>
+                <SignupForm
+                  setSignUpSuccessful={setSignUpSuccessful}
+                  setCurrentUser={setCurrentUser}
+                  currentUser={currentUser}
+                  setSignup={setSignup}
+                />
+              </MainWrapper>
+            )}
+            {currentUser && (
+              <>
+                <TabWrapper>
+                  {tabs &&
+                    tabs.map(x => (
+                      <Tab
+                        key={x}
+                        selected={tab === x}
+                        onClick={() => saveTab(x, setTab)}
+                      >
+                        {x}
+                      </Tab>
+                    ))}
+                </TabWrapper>
+                <MainWrapper>
+                  {tab === 'Welcome' && <Welcome currentUser={currentUser} />}
+                  {tab === 'Users' && (
+                    <Users
+                      currentUser={currentUser}
+                      users={users}
+                      updateUsers={updateUsers}
+                      setUpdateUsers={setUpdateUsers}
+                    />
+                  )}
+                  {tab === 'Chat' && (
+                    <Chat users={users} currentUser={currentUser} />
+                  )}
+                  {tab === 'Habits' && (
+                    <Habits users={users} currentUser={currentUser} />
+                  )}
+                  {tab === 'ReMemory' && (
+                    <ReMemory users={users} currentUser={currentUser} />
+                  )}
+                  {/* {tab === 'Lab' && <Lab />} */}
+                </MainWrapper>
+              </>
+            )}
           </>
-        )}
-      </>
-    )
+        )
+      }
+    />
   );
 };
 
@@ -140,8 +152,9 @@ const Tab = styled.button`
   background-color: ${p => (p.selected ? colors.brightGrey : colors.darkGrey)};
   color: ${colors.white};
   width: 100%;
-  padding: 0.2rem 0.5rem;
-  margin: 1rem 0.2rem;
+  padding: 0.5rem 0.5rem;
+  margin: 0rem 0.05rem 0.6rem;
+  outline: none;
   border: none;
 
   :hover {

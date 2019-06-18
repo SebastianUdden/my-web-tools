@@ -71,6 +71,7 @@ export const ReMemory = ({ users, currentUser }) => {
 
   const setFocus = elementId => {
     document.getElementById(elementId).focus();
+    document.getElementById(elementId).blur();
   };
 
   return (
@@ -517,7 +518,6 @@ const Search = ({
         value={searchQuery}
         onChange={e => {
           setSearchQuery(e.target.value);
-          setFocus();
         }}
       />
       <Remove
@@ -674,6 +674,7 @@ const Sticky = ({ toggleRefresh, setToggleRefresh }) => (
 
 const Container = styled.div`
   max-width: 90vw;
+  margin-top: 0.3rem;
   margin-bottom: 3rem;
   width: 100vw;
 `;
@@ -681,6 +682,7 @@ const Container = styled.div`
 const Header = styled.h2`
   color: ${colors.brightGrey || 'white'};
   display: flex;
+  margin-bottom: 0.8rem;
 
   :hover {
     cursor: pointer;
@@ -711,7 +713,7 @@ const LI = styled.li`
 `;
 
 const SearchWrapper = styled.div`
-  margin: 0 0.2rem;
+  margin: 0rem;
 `;
 
 const SearchInput = styled.input`
@@ -719,8 +721,8 @@ const SearchInput = styled.input`
   color: ${colors.brightGrey};
   background-color: inherit;
   padding: 0.5rem;
-  width: 98%;
-  max-width: 85vw;
+  width: 100%;
+  max-width: 90vw;
 `;
 
 const EditButton = styled.button`
