@@ -4,15 +4,6 @@ import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 import { create, get, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
-// import { getMemories } from '../../utils/mockData';
-
-// const getLinksOfType = (memories, memoryIndex, links, name) => {
-//   if (!links.length) return undefined;
-//   if (!links.some(link => link.name === name)) return undefined;
-//   return links
-//     .filter(link => link.name === name)
-//     .map(link => memories[memoryIndex.indexOf(link.linkedId)]);
-// };
 
 export const ReMemory = ({ users, currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
@@ -43,31 +34,15 @@ export const ReMemory = ({ users, currentUser }) => {
     }
   }, [updateMemory]);
 
-  const sortedMemories = memories.sort();
-  // .map(memory => ({
-  //   ...memory,
-  //   children: getLinksOfType(
-  //     memories,
-  //     memoryIndex,
-  //     memory.links,
-  //     'child'
-  //   ),
-  //   parents: getLinksOfType(
-  //     memories,
-  //     memoryIndex,
-  //     memory.links,
-  //     'parent'
-  //   ),
-  // }))
-  // user: user1.id,
-  // type: 'Memory',
-  // name: 'Programming',
-  // description:
-  //     'Computer programming is the process of designing and building an executable computer program for accomplishing a specific computing task.',
-  // createdAt: new Date('2019-06-16'),
-  // updatedAt: new Date('2019-06-17'),
-  // tags: ['skills', 'work description'],
-  // links: [],
+  const sortedMemories = memories.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
 
   const setFocus = elementId => {
     document.getElementById(elementId).focus();

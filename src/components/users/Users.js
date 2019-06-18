@@ -17,6 +17,7 @@ export const Users = ({ currentUser, users, updateUsers, setUpdateUsers }) => (
         .map(user => {
           return (
             <User
+              key={user.username}
               isCurrentUser={currentUser.username === user.username}
               user={user}
               updateUsers={updateUsers}
