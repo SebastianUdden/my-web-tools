@@ -13,6 +13,8 @@ export const ReMemory = ({ users, currentUser }) => {
   const [memories, setMemories] = useState([]);
   const [memoryLinks, setMemoryLinks] = useState([]);
   const [updateMemory, setUpdateMemory] = useState(undefined);
+  const [sortType, setSortType] = useState('name');
+  const [sortAscending, setSortAscending] = useState(true);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -35,11 +37,11 @@ export const ReMemory = ({ users, currentUser }) => {
   }, [updateMemory]);
 
   const sortedMemories = memories.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
+    if (a[sortType].toLowerCase() < b[sortType].toLowerCase()) {
+      return sortAscending ? -1 : 1;
     }
-    if (a.name > b.name) {
-      return 1;
+    if (a[sortType].toLowerCase() > b[sortType].toLowerCase()) {
+      return sortAscending ? 1 : 1;
     }
     return 0;
   });
