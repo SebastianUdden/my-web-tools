@@ -5,21 +5,28 @@ import { apiUrl } from '../../constants/urls';
 import { create, get, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
 
-export const ReMemory = ({ users, currentUser }) => {
+export const ReMemory = ({ currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
   const [showMemoryInput, setShowMemoryInput] = useState(true);
+  const [showSettings, setShowSettings] = useState(true);
+  const [showDetailedViewFor, setShowDetailedViewFor] = useState({
+    tags: false,
+    parents: false,
+    children: false,
+    description: false,
+  });
+  const sortTypes = ['name', 'tags', 'description'];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [memories, setMemories] = useState([]);
   const [memoryLinks, setMemoryLinks] = useState([]);
   const [updateMemory, setUpdateMemory] = useState(undefined);
   const [sortType, setSortType] = useState('name');
-  const [sortAscending, setSortAscending] = useState(true);
+  const [sortAscending, setSortAscending] = useState(false);
 
   useEffect(() => {
     if (!currentUser) return;
     get(`${apiUrl}/memories`, currentUser.username).then(memories => {
-      // const memoryIndex = memories.map(m => m._id);
       setMemories(memories);
       setMemoryLinks(
         memories.map(memory => ({ name: memory.name, _id: memory._id }))
@@ -37,11 +44,32 @@ export const ReMemory = ({ users, currentUser }) => {
   }, [updateMemory]);
 
   const sortedMemories = memories.sort((a, b) => {
-    if (a[sortType].toLowerCase() < b[sortType].toLowerCase()) {
+    let sortA = a[sortType];
+    let sortB = b[sortType];
+
+    if (
+      (Array.isArray(a[sortType]) && a[sortType].length === 0) ||
+      (Array.isArray(b[sortType]) && b[sortType].length === 0)
+    ) {
+      return 0;
+    }
+
+    if (Array.isArray(a[sortType])) {
+      sortA = a[sortType][0];
+    } else {
+      sortA = a[sortType];
+    }
+    if (Array.isArray(b[sortType])) {
+      sortB = b[sortType][0];
+    } else {
+      sortB = b[sortType];
+    }
+    console.log('SortA: ', sortA);
+    if (sortA.toLowerCase() < sortB.toLowerCase()) {
       return sortAscending ? -1 : 1;
     }
-    if (a[sortType].toLowerCase() > b[sortType].toLowerCase()) {
-      return sortAscending ? 1 : 1;
+    if (sortA.toLowerCase() > sortB.toLowerCase()) {
+      return sortAscending ? 1 : -1;
     }
     return 0;
   });
@@ -59,7 +87,17 @@ export const ReMemory = ({ users, currentUser }) => {
           {showMemoryInput ? (
             <SearchIcon>&#9906;</SearchIcon>
           ) : (
-            <AddIcon>+</AddIcon>
+            <>
+              <AddIcon>+</AddIcon>
+              <SettingsIcon
+                onClick={e => {
+                  e.stopPropagation();
+                  setShowSettings(!showSettings);
+                }}
+              >
+                &#x2699;
+              </SettingsIcon>
+            </>
           )}
         </Header>
         <Body>
@@ -76,13 +114,54 @@ export const ReMemory = ({ users, currentUser }) => {
             />
           )}
           {!showMemoryInput && (
-            <Search
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              setFocus={() => setFocus('SearchField')}
-              memories={sortedMemories}
-              setUpdateMemory={setUpdateMemory}
-            />
+            <>
+              {showSettings && (
+                <>
+                  <SearchSettings>
+                    <Symbol>&#x22CE;</Symbol>{' '}
+                    {Object.keys(showDetailedViewFor).map(view => (
+                      <Setting
+                        selectedSetting={showDetailedViewFor[view]}
+                        onClick={() => {
+                          setShowDetailedViewFor({
+                            ...showDetailedViewFor,
+                            [view]: !showDetailedViewFor[view],
+                          });
+                        }}
+                      >
+                        {view}
+                      </Setting>
+                    ))}
+                  </SearchSettings>
+                  <SearchSettings>
+                    <Symbol>&#x2195;</Symbol>{' '}
+                    {sortTypes &&
+                      sortTypes.map(st => (
+                        <Setting
+                          selectedSetting={st === sortType}
+                          onClick={() => setSortType(st)}
+                        >
+                          {st}
+                        </Setting>
+                      ))}
+                    <Setting
+                      selectedSetting
+                      onClick={() => setSortAscending(!sortAscending)}
+                    >
+                      {sortAscending ? <>&darr;</> : <>&uarr;</>}
+                    </Setting>
+                  </SearchSettings>
+                </>
+              )}
+              <Search
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                setFocus={() => setFocus('SearchField')}
+                memories={sortedMemories}
+                setUpdateMemory={setUpdateMemory}
+                showDetailedViewFor={showDetailedViewFor}
+              />
+            </>
           )}
         </Body>
       </Container>
@@ -486,6 +565,7 @@ const Search = ({
   setSearchQuery,
   memories,
   setUpdateMemory,
+  showDetailedViewFor,
 }) => (
   <>
     <SearchWrapper>
@@ -517,6 +597,7 @@ const Search = ({
             setSearchQuery={setSearchQuery}
             setFocus={setFocus}
             setUpdateMemory={setUpdateMemory}
+            showDetailedViewFor={showDetailedViewFor}
           />
         ))}
     </SearchResults>
@@ -530,108 +611,108 @@ const Memory = ({
   setFocus,
   setSearchQuery,
   setUpdateMemory,
+  showDetailedViewFor: detailedViewFor,
 }) => {
   const [showEditButtons, setShowEditButtons] = useState(false);
+  const [showDetailedView, setShowDetailedView] = useState(detailedViewFor);
+
+  useEffect(() => {
+    setShowDetailedView(detailedViewFor);
+  }, [detailedViewFor]);
+
   const children = m.children.map(
     c => memories.find(s => s._id === c.linkedId) || []
   );
   const parents = m.parents.map(
     p => memories.find(s => s._id === p.linkedId) || []
   );
+
   return (
     (m.name.toLowerCase().includes(q) ||
       m.description.toLowerCase().includes(q) ||
       m.tags.some(tag => tag.includes(q))) && (
-      <LI>
-        {parents && parents.length !== 0 && (
-          <Parents>
-            <Name onClick={() => setShowEditButtons(!showEditButtons)}>
-              {m.name}
-              {showEditButtons && (
-                <>
-                  <Edit
-                    onClick={() =>
-                      setUpdateMemory({
-                        _id: m._id,
-                        name: m.name,
-                        description: m.description,
-                        tags: m.tags,
-                        parents: m.parents,
-                        children: m.children,
-                      })
-                    }
-                  >
-                    &#x270E;
-                  </Edit>
-                </>
-              )}
-            </Name>
-            {parents.map(c => (
-              <Parent
-                key={c.name}
-                onClick={() => {
-                  setFocus();
-                  setSearchQuery(c.name);
-                }}
+      <LI showDetailedView={showDetailedView}>
+        <Parents>
+          <Name
+            onClick={() => {
+              setShowEditButtons(!showEditButtons);
+              setShowDetailedView({
+                tags: !showEditButtons,
+                parents: !showEditButtons,
+                children: !showEditButtons,
+                description: !showEditButtons,
+              });
+            }}
+          >
+            {m.name}
+            {showEditButtons && (
+              <Edit
+                onClick={() =>
+                  setUpdateMemory({
+                    _id: m._id,
+                    name: m.name,
+                    description: m.description,
+                    tags: m.tags,
+                    parents: m.parents,
+                    children: m.children,
+                  })
+                }
               >
-                {c.name}
-              </Parent>
-            ))}
-          </Parents>
-        )}
-        {!parents ||
-          (parents.length === 0 && (
-            <Em onClick={() => setShowEditButtons(!showEditButtons)}>
-              {m.name}
-              {showEditButtons && (
-                <>
-                  <Edit
-                    onClick={() =>
-                      setUpdateMemory({
-                        _id: m._id,
-                        name: m.name,
-                        description: m.description,
-                        tags: m.tags,
-                        parents: m.parents,
-                        children: m.children,
-                      })
-                    }
+                &#x270E;
+              </Edit>
+            )}
+          </Name>
+          {parents &&
+            parents.length !== 0 &&
+            showDetailedView.parents &&
+            parents.map(
+              c =>
+                c.name && (
+                  <Parent
+                    key={c.name}
+                    onClick={() => {
+                      setFocus();
+                      setSearchQuery(c.name);
+                    }}
                   >
-                    &#x270E;
-                  </Edit>
-                </>
-              )}
-            </Em>
-          ))}
-        <Tags>
-          {m.tags.map(t => (
-            <Tag
-              key={t}
-              onClick={() => {
-                setFocus();
-                setSearchQuery(t);
-              }}
-            >
-              {t}
-            </Tag>
-          ))}
-        </Tags>
-        {m.description}
-        {children && children.length !== 0 && (
-          <Children>
-            {children.map(c => (
-              <Child
-                key={c.name}
-                onClick={() => {
-                  setFocus();
-                  setSearchQuery(c.name);
-                }}
-              >
-                {c.name}
-              </Child>
-            ))}
-          </Children>
-        )}
+                    {c.name}
+                  </Parent>
+                )
+            )}
+        </Parents>
+        <>
+          {showDetailedView.tags && (
+            <Tags>
+              {m.tags.map(t => (
+                <Tag
+                  key={t}
+                  onClick={() => {
+                    setFocus();
+                    setSearchQuery(t);
+                  }}
+                >
+                  {t}
+                </Tag>
+              ))}
+            </Tags>
+          )}
+          {showDetailedView.description && m.description}
+          {children && children.length !== 0 && showDetailedView.children && (
+            <Children>
+              {children.map(c => (
+                <Child
+                  key={c.name}
+                  onClick={() => {
+                    setFocus();
+                    setSearchQuery(c.name);
+                  }}
+                >
+                  {c.name}
+                </Child>
+              ))}
+            </Children>
+          )}
+        </>
       </LI>
     )
   );
@@ -679,18 +760,18 @@ const StickyWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: larger;
-  padding: 1rem 1rem 0.5rem;
+  padding: 0.5rem 1rem 0rem;
   bottom: 0;
 `;
 
 const LI = styled.li`
   list-style: none;
-  margin: 1rem 0;
+  margin: ${p => (p.showDetailedView ? '1rem' : 0)} 0;
   padding: 0;
 `;
 
 const SearchWrapper = styled.div`
-  margin: 0rem;
+  margin: 0 0 0.5rem;
 `;
 
 const SearchInput = styled.input`
@@ -698,7 +779,7 @@ const SearchInput = styled.input`
   color: ${colors.brightGrey};
   background-color: inherit;
   padding: 0.5rem;
-  width: 100%;
+  width: 95%;
   max-width: 90vw;
 `;
 
@@ -787,9 +868,16 @@ const SearchIcon = styled.div`
   transform: translate(0%) rotate(45deg);
   color: ${colors.darkWhite};
 `;
-const AddIcon = styled.span`
+const Icon = styled.span`
   margin-left: 0.6rem;
   color: ${colors.darkWhite};
+`;
+const AddIcon = styled(Icon)``;
+const SettingsIcon = styled(Icon)`
+  display: flex;
+  align-items: center;
+  padding-top: 0.07rem;
+  font-size: small;
 `;
 const InputArea = styled.div`
   display: flex;
@@ -838,4 +926,22 @@ const Remove = styled(EditButton)`
 `;
 const Edit = styled(EditButton)`
   margin-left: 0.5rem;
+`;
+const SearchSettings = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 95%;
+  margin-bottom: 0.5rem;
+`;
+const Setting = styled(Button)`
+  background-color: ${p => (p.selectedSetting ? 'none' : 'inherit')};
+  border: ${p => (p.selectedSetting ? 'none' : 'inherit')};
+  margin-right: 0.2rem;
+  min-width: 2.5rem;
+`;
+const Symbol = styled.span`
+  margin-right: 0.5rem;
+  color: ${colors.orange};
+  font-size: x-large;
 `;
