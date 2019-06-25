@@ -376,21 +376,26 @@ const MemoryInput = ({
             </DeleteButton>
           )}
           {showConfirmDelete && (
-            <DeleteButton
-              confirmDelete
-              onClick={() => {
-                setShowConfirmDelete(!showConfirmDelete);
-                remove(
-                  `${apiUrl}/memories/${updateMemory._id}`,
-                  currentUser.username
-                ).then(response => {
-                  console.log('Successfully removed: ', response);
-                  setUpdateMemory(undefined);
-                });
-              }}
-            >
-              Confirm DELETE of {updateMemory.name}
-            </DeleteButton>
+            <>
+              <DeleteButton
+                confirmDelete
+                onClick={() => {
+                  setShowConfirmDelete(!showConfirmDelete);
+                  remove(
+                    `${apiUrl}/memories/${updateMemory._id}`,
+                    currentUser.username
+                  ).then(response => {
+                    console.log('Successfully removed: ', response);
+                    setUpdateMemory(undefined);
+                  });
+                }}
+              >
+                Confirm DELETE of {updateMemory.name}
+              </DeleteButton>
+              <FormButton onClick={() => setShowConfirmDelete(false)}>
+                Cancel
+              </FormButton>
+            </>
           )}
         </>
       )}
