@@ -11,7 +11,7 @@ import Settings from './Settings';
 export const ReMemory = ({ currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
   const [showMemoryInput, setShowMemoryInput] = useState(true);
-  const [showSettings, setShowSettings] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
   const [showDetailedViewFor, setShowDetailedViewFor] = useState({
     tags: true,
     parents: true,
@@ -83,7 +83,12 @@ export const ReMemory = ({ currentUser }) => {
   return (
     <>
       <Container>
-        <Header onClick={() => setShowMemoryInput(!showMemoryInput)}>
+        <Header
+          onClick={() => {
+            setUpdateMemory(undefined);
+            setShowMemoryInput(!showMemoryInput);
+          }}
+        >
           ReMemory{' '}
           {showMemoryInput ? (
             <SearchIcon>&#9906;</SearchIcon>

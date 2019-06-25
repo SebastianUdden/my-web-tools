@@ -24,6 +24,7 @@ const MemoryInput = ({
   toggleRefresh,
   setToggleRefresh,
 }) => {
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [inputName, setInputName] = useState(
     updateMemory ? updateMemory.name : ''
   );
@@ -365,19 +366,32 @@ const MemoryInput = ({
           >
             Update memory
           </FormButton>
-          <DeleteButton
-            onClick={() => {
-              remove(
-                `${apiUrl}/memories/${updateMemory._id}`,
-                currentUser.username
-              ).then(response => {
-                console.log('Successfully removed: ', response);
-                setUpdateMemory(undefined);
-              });
-            }}
-          >
-            Delete memory
-          </DeleteButton>
+          {!showConfirmDelete && (
+            <DeleteButton
+              onClick={() => {
+                setShowConfirmDelete(!showConfirmDelete);
+              }}
+            >
+              Delete memory
+            </DeleteButton>
+          )}
+          {showConfirmDelete && (
+            <DeleteButton
+              confirmDelete
+              onClick={() => {
+                setShowConfirmDelete(!showConfirmDelete);
+                remove(
+                  `${apiUrl}/memories/${updateMemory._id}`,
+                  currentUser.username
+                ).then(response => {
+                  console.log('Successfully removed: ', response);
+                  setUpdateMemory(undefined);
+                });
+              }}
+            >
+              Confirm DELETE of {updateMemory.name}
+            </DeleteButton>
+          )}
         </>
       )}
     </>
@@ -406,8 +420,8 @@ const FormButton = styled(Button)`
   margin-top: 1rem;
 `;
 const DeleteButton = styled(FormButton)`
-  border: none;
   background: maroon;
+  border: ${p => (p.confirmDelete ? '1px solid white' : 'none')};
   color: ${colors.white};
 `;
 const Select = styled.select`
