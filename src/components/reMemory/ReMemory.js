@@ -13,18 +13,23 @@ export const ReMemory = ({ currentUser }) => {
   const [showMemoryInput, setShowMemoryInput] = useState(true);
   const [showSettings, setShowSettings] = useState(true);
   const [showDetailedViewFor, setShowDetailedViewFor] = useState({
-    tags: false,
-    parents: false,
-    children: false,
-    description: false,
+    tags: true,
+    parents: true,
+    children: true,
+    description: true,
   });
 
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQueries, setSearchQueries] = useState([
+    'CSS',
+    'language',
+    'style',
+    'web',
+  ]);
   const [memories, setMemories] = useState([]);
   const [memoryLinks, setMemoryLinks] = useState([]);
   const [updateMemory, setUpdateMemory] = useState(undefined);
   const [sortType, setSortType] = useState('name');
-  const [sortAscending, setSortAscending] = useState(false);
+  const [sortAscending, setSortAscending] = useState(true);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -127,8 +132,8 @@ export const ReMemory = ({ currentUser }) => {
                 />
               )}
               <Search
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
+                searchQueries={searchQueries}
+                setSearchQueries={setSearchQueries}
                 setFocus={() => setFocus('SearchField')}
                 memories={sortedMemories}
                 setUpdateMemory={setUpdateMemory}

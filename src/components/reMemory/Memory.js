@@ -4,31 +4,44 @@ import { LI, Tags, Tag, Em, MinimalButton } from './commonComponents';
 
 const Memory = ({
   memories,
-  memory: m,
-  query: q,
+  memory,
+  searchQueries,
+  setSearchQueries,
   setFocus,
-  setSearchQuery,
   setUpdateMemory,
   showDetailedViewFor: detailedViewFor,
 }) => {
   const [showEditButtons, setShowEditButtons] = useState(false);
   const [showDetailedView, setShowDetailedView] = useState(detailedViewFor);
+  const {
+    _id,
+    name,
+    description,
+    tags,
+    parents: parentLinks,
+    children: childrenLinks,
+  } = memory;
 
   useEffect(() => {
     setShowDetailedView(detailedViewFor);
   }, [detailedViewFor]);
 
-  const children = m.children.map(
+  const children = childrenLinks.map(
     c => memories.find(s => s._id === c.linkedId) || []
   );
-  const parents = m.parents.map(
+  const parents = parentLinks.map(
     p => memories.find(s => s._id === p.linkedId) || []
   );
 
+  const includesSearchQueries = elements => {
+    return searchQueries.every(searchQuery =>
+      elements.some(element =>
+        element.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  };
   return (
-    (m.name.toLowerCase().includes(q) ||
-      m.description.toLowerCase().includes(q) ||
-      m.tags.some(tag => tag.includes(q))) && (
+    includesSearchQueries([name, description, ...tags]) && (
       <LI showDetailedView={showDetailedView}>
         <Parents>
           <Name
@@ -46,17 +59,17 @@ const Memory = ({
               );
             }}
           >
-            {m.name}
+            {name}
             {showEditButtons && (
               <Edit
                 onClick={() =>
                   setUpdateMemory({
-                    _id: m._id,
-                    name: m.name,
-                    description: m.description,
-                    tags: m.tags,
-                    parents: m.parents,
-                    children: m.children,
+                    _id,
+                    name,
+                    description,
+                    tags,
+                    parents: parentLinks,
+                    children: childrenLinks,
                   })
                 }
               >
@@ -74,7 +87,7 @@ const Memory = ({
                     key={c.name}
                     onClick={() => {
                       setFocus();
-                      setSearchQuery(c.name);
+                      setSearchQueries([...searchQueries, c.name]);
                     }}
                   >
                     {c.name}
@@ -85,12 +98,12 @@ const Memory = ({
         <>
           {showDetailedView.tags && (
             <Tags>
-              {m.tags.map(t => (
+              {tags.map(t => (
                 <Tag
                   key={t}
                   onClick={() => {
                     setFocus();
-                    setSearchQuery(t);
+                    setSearchQueries([...searchQueries, t]);
                   }}
                 >
                   {t}
@@ -98,7 +111,7 @@ const Memory = ({
               ))}
             </Tags>
           )}
-          {showDetailedView.description && m.description}
+          {showDetailedView.description && description}
           {children && children.length !== 0 && showDetailedView.children && (
             <Children>
               {children.map(c => (
@@ -106,7 +119,7 @@ const Memory = ({
                   key={c.name}
                   onClick={() => {
                     setFocus();
-                    setSearchQuery(c.name);
+                    setSearchQueries([...searchQueries, c.name]);
                   }}
                 >
                   {c.name}

@@ -4,7 +4,15 @@ import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 import { create, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
-import { Input, Button, Tags, Tag } from './commonComponents';
+import {
+  Input,
+  Button,
+  Tags,
+  Tag,
+  FlexWrapper,
+  AddButton,
+} from './commonComponents';
+import InputTag from './InputTag';
 
 const MemoryInput = ({
   updateMemory,
@@ -22,7 +30,6 @@ const MemoryInput = ({
   const [inputDescription, setInputDescription] = useState(
     updateMemory ? updateMemory.description : ''
   );
-  const [inputTag, setInputTag] = useState('');
   const [inputTags, setInputTags] = useState(
     updateMemory ? updateMemory.tags : []
   );
@@ -69,24 +76,11 @@ const MemoryInput = ({
       </InputArea>
       <InputArea>
         <Label>Tags</Label>
-        <AddInputWrapper>
-          <TagInput
-            id="TagInput"
-            value={inputTag}
-            onChange={e => setInputTag(e.target.value)}
-          />
-          <AddButton
-            onClick={() => {
-              inputTag &&
-                !inputTags.find(tag => tag === inputTag.toLowerCase()) &&
-                setInputTags([...inputTags, inputTag.toLowerCase()]);
-              setInputTag('');
-              document.getElementById('TagInput').focus();
-            }}
-          >
-            +
-          </AddButton>
-        </AddInputWrapper>
+        <InputTag
+          id="TagInput"
+          inputTags={inputTags}
+          setInputTags={setInputTags}
+        />
         <Tags>
           {inputTags &&
             inputTags.map(tag => (
@@ -113,7 +107,7 @@ const MemoryInput = ({
       </InputArea>
       <InputArea>
         <Label>Children</Label>
-        <AddInputWrapper>
+        <FlexWrapper>
           <SelectChild
             id="SelectChild"
             value={inputChild}
@@ -162,7 +156,7 @@ const MemoryInput = ({
           >
             +
           </AddButton>
-        </AddInputWrapper>
+        </FlexWrapper>
         <Tags>
           {inputChildren &&
             inputChildren.map(child => (
@@ -192,7 +186,7 @@ const MemoryInput = ({
       </InputArea>
       <InputArea>
         <Label>Parents</Label>
-        <AddInputWrapper>
+        <FlexWrapper>
           <SelectParent
             id="SelectParent"
             value={inputParent}
@@ -244,7 +238,7 @@ const MemoryInput = ({
           >
             +
           </AddButton>
-        </AddInputWrapper>
+        </FlexWrapper>
         <Tags>
           {inputParents &&
             inputParents.map(parent => (
@@ -406,17 +400,6 @@ const InputArea = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 0.5rem;
-`;
-const AddInputWrapper = styled.div`
-  display: flex;
-`;
-const TagInput = styled(Input)`
-  width: 85%;
-  margin-bottom: 0;
-`;
-const AddButton = styled(Button)`
-  width: 15%;
-  font-size: x-large;
 `;
 const FormButton = styled(Button)`
   width: 100%;
