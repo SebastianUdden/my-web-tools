@@ -19,12 +19,7 @@ export const ReMemory = ({ currentUser }) => {
     description: true,
   });
 
-  const [searchQueries, setSearchQueries] = useState([
-    'CSS',
-    'language',
-    'style',
-    'web',
-  ]);
+  const [searchQueries, setSearchQueries] = useState(['']);
   const [memories, setMemories] = useState([]);
   const [memoryLinks, setMemoryLinks] = useState([]);
   const [updateMemory, setUpdateMemory] = useState(undefined);
