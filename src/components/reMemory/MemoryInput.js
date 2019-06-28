@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
-import { get, create, update, remove } from '../../utils/api';
+import { create, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
 import {
   Input,
@@ -97,6 +97,7 @@ const MemoryInput = ({
           id="TagInput"
           inputTags={inputTags}
           setInputTags={setInputTags}
+          memories={memories}
         />
         <Tags>
           {inputTags &&

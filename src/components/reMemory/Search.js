@@ -18,6 +18,7 @@ const Search = ({
         id="SearchField"
         inputTags={searchQueries}
         setInputTags={setSearchQueries}
+        memories={memories}
       />
       <Tags>
         {searchQueries &&
