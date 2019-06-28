@@ -70,6 +70,7 @@ const Memory = ({
                     tags,
                     parents: parentLinks,
                     children: childrenLinks,
+                    count: 0,
                   })
                 }
               >

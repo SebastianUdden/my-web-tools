@@ -109,6 +109,8 @@ export const ReMemory = ({ currentUser }) => {
         <Body>
           {showMemoryInput && (
             <MemoryInput
+              toggleRefresh={toggleRefresh}
+              setToggleRefresh={setToggleRefresh}
               updateMemory={updateMemory}
               setUpdateMemory={setUpdateMemory}
               memoryLinks={memoryLinks}
