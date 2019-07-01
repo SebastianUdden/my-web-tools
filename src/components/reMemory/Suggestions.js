@@ -3,23 +3,23 @@ import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 
 const Suggestions = ({
+  id,
   results,
   inputTag,
   setInputTag,
   addTag,
   setShowSuggestions,
 }) => {
-  const options = results.map(r => (
-    <option key={r._id} value={r.name}>
+  const options = results.map((r, index) => (
+    <option key={r._id} value={r.name} tabIndex={index}>
       {r.name}
     </option>
   ));
   return (
     <>
       {results.length > 0 && (
-        <SelectChild
-          id="SelectChild"
-          tabIndex="0"
+        <SuggestionsList
+          id={id}
           size={results.length < 10 ? results.length : 10}
           value={inputTag}
           onChange={e => {
@@ -29,19 +29,20 @@ const Suggestions = ({
           }}
         >
           {options}
-        </SelectChild>
+        </SuggestionsList>
       )}
     </>
   );
 };
 
-const Select = styled.select`
+const SuggestionsList = styled.datalist`
   padding: 0.3rem;
   border: 1px solid ${colors.darkGrey};
-  background-color: inherit;
+  background-color: ${colors.darkerGrey};
+  z-index: 1;
+  opacity: 1;
   color: inherit;
-`;
-const SelectChild = styled(Select)`
+  position: fixed;
   width: 85%;
   border-radius: 0;
 `;

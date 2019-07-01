@@ -7,25 +7,21 @@ const InputTag = ({ id, inputTags, setInputTags, memories }) => {
   const [inputTag, setInputTag] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
 
-  const addTag = t => {
-    if (t) {
-      !inputTags
-        .slice(0, inputTags.length - 1)
-        .find(tag => tag === t.toLowerCase()) &&
-        setInputTags([...inputTags, t.trim().toLowerCase()]);
-    } else {
-      inputTag &&
-        !inputTags
-          .slice(0, inputTags.length - 1)
-          .find(tag => tag === inputTag.toLowerCase()) &&
-        setInputTags([...inputTags, inputTag.trim().toLowerCase()]);
-    }
+  const addTag = () => {
+    const tagFormatted = inputTag && inputTag.replace(/"/g, '');
+    console.log('TagFormatted: ', tagFormatted);
+    !inputTags
+      .slice(0, inputTags.length - 1)
+      .find(tag => tag === tagFormatted.toLowerCase()) &&
+      setInputTags([...inputTags, tagFormatted.trim().toLowerCase()]);
     setInputTag('');
   };
 
   useEffect(() => {
-    if (inputTag.endsWith(' ')) {
-      addTag();
+    if (!inputTag.includes('"')) {
+      if (inputTag.endsWith(' ')) {
+        addTag();
+      }
     }
   }, [inputTag]);
 
@@ -34,12 +30,13 @@ const InputTag = ({ id, inputTags, setInputTags, memories }) => {
       <FlexWrapper>
         <TagInput
           id={id}
+          list={`${id}suggestions`}
           value={inputTag}
           onChange={e => {
             setShowSuggestions(true);
             setInputTag(e.target.value);
           }}
-          autocomplete="off"
+          autoComplete="off"
         />
         <AddButton
           onClick={() => {
@@ -53,6 +50,7 @@ const InputTag = ({ id, inputTags, setInputTags, memories }) => {
       <FlexWrapper>
         {inputTag.length > 0 && showSuggestions && (
           <Suggestions
+            id={`${id}suggestions`}
             addTag={addTag}
             inputTag={inputTag}
             setInputTag={setInputTag}
