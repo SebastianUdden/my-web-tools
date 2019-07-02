@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FlexWrapper, Input, AddButton } from './commonComponents';
+import { Input, Tags, Tag, FlexWrapper, AddButton } from './commonComponents';
 import Suggestions from './Suggestions';
 
-const InputTag = ({ id, inputTags, setInputTags, memories }) => {
+const InputTag = ({ id, inputTags, setInputTags, memories, validate }) => {
   const [inputTag, setInputTag] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
 
   const addTag = () => {
+    if (
+      validate &&
+      !memories.filter(m => m.name.toLowerCase() === inputTag.toLowerCase())
+        .length
+    )
+      return;
     const tagFormatted = inputTag && inputTag.replace(/"/g, '');
-    console.log('TagFormatted: ', tagFormatted);
     !inputTags
       .slice(0, inputTags.length - 1)
       .find(tag => tag === tagFormatted.toLowerCase()) &&
@@ -62,6 +67,29 @@ const InputTag = ({ id, inputTags, setInputTags, memories }) => {
           />
         )}
       </FlexWrapper>
+      <Tags>
+        {inputTags &&
+          inputTags.map(tag => (
+            <Tag
+              key={tag}
+              onClick={e => {
+                console.log('inputTags: ', inputTags);
+                setInputTags(
+                  inputTags.filter(
+                    tag =>
+                      tag.toLowerCase() !==
+                      e.target.innerText
+                        .substring(0, e.target.innerText.length - 2)
+                        .toLowerCase()
+                  )
+                );
+                document.getElementById(id).focus();
+              }}
+            >
+              {tag} &times;
+            </Tag>
+          ))}
+      </Tags>
     </>
   );
 };

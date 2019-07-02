@@ -19,7 +19,7 @@ export const ReMemory = ({ currentUser }) => {
     description: true,
   });
 
-  const [searchQueries, setSearchQueries] = useState(['']);
+  const [searchQueries, setSearchQueries] = useState([]);
   const [memories, setMemories] = useState([]);
   const [memoryLinks, setMemoryLinks] = useState([]);
   const [updateMemory, setUpdateMemory] = useState(undefined);
@@ -129,8 +129,6 @@ export const ReMemory = ({ currentUser }) => {
                   setShowDetailedViewFor={setShowDetailedViewFor}
                   sortType={sortType}
                   setSortType={setSortType}
-                  sortAscending={sortAscending}
-                  setSortAscending={setSortAscending}
                 />
               )}
               <Search
@@ -140,6 +138,8 @@ export const ReMemory = ({ currentUser }) => {
                 memories={sortedMemories}
                 setUpdateMemory={setUpdateMemory}
                 showDetailedViewFor={showDetailedViewFor}
+                setSortAscending={setSortAscending}
+                sortAscending={sortAscending}
               />
             </>
           )}

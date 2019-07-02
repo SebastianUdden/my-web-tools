@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Memory from './Memory';
-import { Tags, Tag } from './commonComponents';
 import InputTag from './InputTag';
+import { AddButton } from './commonComponents';
 
 const Search = ({
   searchQueries,
@@ -11,32 +11,23 @@ const Search = ({
   memories,
   setUpdateMemory,
   showDetailedViewFor,
+  sortAscending,
+  setSortAscending,
 }) => (
   <>
     <SearchWrapper>
-      <InputTag
-        id="SearchField"
-        inputTags={searchQueries}
-        setInputTags={setSearchQueries}
-        memories={memories}
-      />
-      <Tags>
-        {searchQueries &&
-          searchQueries
-            .filter(searchQuery => searchQuery)
-            .map(searchQuery => (
-              <Tag
-                key={searchQuery}
-                onClick={() =>
-                  setSearchQueries(
-                    searchQueries.filter(sq => sq !== searchQuery)
-                  )
-                }
-              >
-                {searchQuery} &times;
-              </Tag>
-            ))}
-      </Tags>
+      <TagWrapper>
+        <InputTag
+          id="SearchField"
+          inputTags={searchQueries}
+          setInputTags={setSearchQueries}
+          memories={memories}
+          validate={false}
+        />
+      </TagWrapper>
+      <SearchOrder onClick={() => setSortAscending(!sortAscending)}>
+        {sortAscending ? <>&darr;</> : <>&uarr;</>}
+      </SearchOrder>
     </SearchWrapper>
     <SearchResults>
       {memories &&
@@ -58,9 +49,20 @@ const Search = ({
 
 const SearchWrapper = styled.div`
   margin: 0 0 0.5rem;
+  display: flex;
+  width: 100%;
 `;
 const SearchResults = styled.ul`
   margin: 0;
+`;
+const TagWrapper = styled.div`
+  width: 100%;
+`;
+const SearchOrder = styled(AddButton)`
+  font-size: large;
+  margin-left: 0.1rem;
+  margin-bottom: 0.5rem;
+  max-height: 2.6rem;
 `;
 
 export default Search;

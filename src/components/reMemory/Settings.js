@@ -8,10 +8,18 @@ const Settings = ({
   setShowDetailedViewFor,
   sortType,
   setSortType,
-  sortAscending,
-  setSortAscending,
 }) => {
-  const sortTypes = ['name', 'tags', 'description'];
+  const sortTypes = [
+    { name: 'name', title: 'Name' },
+    { name: 'tags', title: 'Tag' },
+    { name: 'description', title: 'Desc.' },
+  ];
+  const showDetailedView = {
+    tags: 'Tag',
+    parents: 'Parent',
+    children: 'Child',
+    description: 'Desc',
+  };
 
   return (
     <>
@@ -28,7 +36,7 @@ const Settings = ({
               });
             }}
           >
-            {view}
+            {showDetailedView[view]}
           </Setting>
         ))}
       </SearchSettings>
@@ -38,18 +46,12 @@ const Settings = ({
           sortTypes.map(st => (
             <Setting
               key={st}
-              selectedSetting={st === sortType}
-              onClick={() => setSortType(st)}
+              selectedSetting={st.name === sortType}
+              onClick={() => setSortType(st.name)}
             >
-              {st}
+              {st.title}
             </Setting>
           ))}
-        <Setting
-          selectedSetting
-          onClick={() => setSortAscending(!sortAscending)}
-        >
-          {sortAscending ? <>&darr;</> : <>&uarr;</>}
-        </Setting>
       </SearchSettings>
     </>
   );
@@ -67,6 +69,7 @@ const Setting = styled(Button)`
   border: ${p => (p.selectedSetting ? 'none' : 'inherit')};
   margin-right: 0.2rem;
   min-width: 2.5rem;
+  width: 100%;
 `;
 const Symbol = styled.span`
   margin-right: 0.5rem;

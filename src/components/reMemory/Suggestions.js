@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 
@@ -25,7 +25,7 @@ const Suggestions = ({
           onChange={e => {
             setInputTag(e.target.value);
             setShowSuggestions(false);
-            addTag(e.target.value);
+            addTag();
           }}
         >
           {options}
