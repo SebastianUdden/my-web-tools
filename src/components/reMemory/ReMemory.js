@@ -16,7 +16,8 @@ export const ReMemory = ({ currentUser }) => {
     tags: true,
     parents: true,
     children: true,
-    description: true,
+    description: false,
+    descriptionSummary: true,
   });
 
   const [searchQueries, setSearchQueries] = useState([]);
