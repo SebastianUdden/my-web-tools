@@ -168,7 +168,8 @@ const Link = styled.a`
 
 const Description = ({ description, summary }) => {
   const linkRegexp = /\[(.+)\]\(([^ ]+?)( "(.+)")?\)/gm;
-  const desc = summary ? `${description.substring(0, 80)}...` : description;
+  const desc =
+    summary && description ? `${description.substring(0, 80)}...` : description;
   const splitDesc = desc.split(linkRegexp).filter(d => d);
   return (
     <Wrapper summary={summary}>
