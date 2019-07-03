@@ -111,8 +111,8 @@ const Signup = styled.span`
 `;
 
 const HandleLogin = (
-  username = process.env.MOCK_USER,
-  password = process.env.MOCK_PASSWORD,
+  username,
+  password,
   setCurrentUser,
   users,
   setLoginSuccessful
@@ -124,8 +124,6 @@ const HandleLogin = (
       user => user.username === username && user.password === password
     );
   if (currentUser) {
-    sessionStorage.setItem('username', username);
-    sessionStorage.setItem('password', password);
     update(
       `${apiUrl}/users/${currentUser._id}`,
       {
@@ -135,9 +133,9 @@ const HandleLogin = (
       currentUser.username
     ).then(response => {
       setLoginSuccessful(true);
-      setCurrentUser(currentUser);
+      setCurrentUser(response);
+      sessionStorage.setItem('username', response.username);
+      sessionStorage.setItem('password', response.password);
     });
-  } else {
-    setCurrentUser(undefined);
   }
 };

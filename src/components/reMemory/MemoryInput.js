@@ -53,14 +53,6 @@ const MemoryInput = ({
     document.getElementById('InputName').focus();
   }, []);
 
-  useEffect(() => {
-    console.log('InputParents: ', inputParents);
-  }, [inputParents]);
-
-  useEffect(() => {
-    console.log('InputChildren: ', inputChildren);
-  }, [inputChildren]);
-
   return (
     <>
       <InputArea>

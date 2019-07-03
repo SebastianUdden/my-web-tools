@@ -142,7 +142,7 @@ const HandleSignup = (signupData, users, setSignUpSuccessful) => {
     return undefined;
   } else {
     create(`${apiUrl}/users`, signupData, 'Unauthorized').then(response => {
-      console.log('USER-CREATE-response: ', response);
+      console.log('USER-CREATED-response: ', response);
     });
     setSignUpSuccessful(true);
   }

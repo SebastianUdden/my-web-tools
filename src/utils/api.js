@@ -8,8 +8,6 @@ export const get = async (url, token) => {
       },
     })
     .then(response => {
-      // console.log('GET-response: ', response);
-
       return response && response.data;
     })
     .catch(error => {

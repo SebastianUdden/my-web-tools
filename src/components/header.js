@@ -4,7 +4,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors } from '../constants/colors';
 
-const Header = ({ siteTitle, setCurrentUser, setLoginSuccessful }) => (
+const Header = ({
+  siteTitle,
+  currentUser,
+  setCurrentUser,
+  setLoginSuccessful,
+}) => (
   <header
     style={{
       background: colors.black,
@@ -25,6 +30,7 @@ const Header = ({ siteTitle, setCurrentUser, setLoginSuccessful }) => (
         >
           {siteTitle}{' '}
         </Link>
+        {currentUser && <User>{currentUser.username}</User>}
         <SignOut
           onClick={() => {
             sessionStorage.clear();
@@ -49,6 +55,9 @@ const Heading = styled.h1`
   font-size: medium;
   display: flex;
   justify-content: space-between;
+`;
+const User = styled.span`
+  color: white;
 `;
 const SignOut = styled.span`
   color: white;

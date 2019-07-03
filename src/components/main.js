@@ -34,15 +34,15 @@ export const Main = () => {
     get(`${apiUrl}/users`, 'Unauthorized').then(users => {
       if (users.error) return;
       setUsers(users);
-      setCurrentUser(
-        users.find(
-          user =>
-            user.username === process.env.MOCK_USER ||
-            (sessionStorage.getItem('username') &&
-              user.password === process.env.MOCK_PASSWORD) ||
-            sessionStorage.getItem('password')
-        )
-      );
+      // setCurrentUser(
+      //   users.find(
+      //     user =>
+      //       user.username === process.env.MOCK_USER ||
+      //       (sessionStorage.getItem('username') &&
+      //         user.password === process.env.MOCK_PASSWORD) ||
+      //       sessionStorage.getItem('password')
+      //   )
+      // );
     });
     setTab(sessionStorage.getItem('tab') || 'Welcome');
   }, [signUpSuccessful, loginSuccessful, updateUsers]);
@@ -63,6 +63,7 @@ export const Main = () => {
           <>
             <Header
               siteTitle={data.site.siteMetadata.title}
+              currentUser={currentUser}
               setCurrentUser={setCurrentUser}
               setLoginSuccessful={setLoginSuccessful}
             />
@@ -116,7 +117,7 @@ export const Main = () => {
                   {tab === 'Habits' && (
                     <Habits users={users} currentUser={currentUser} />
                   )}
-                  {tab === 'ReMemory' && (
+                  {tab === 'ReMemory' && currentUser.username === 'Sebbe' && (
                     <ReMemory users={users} currentUser={currentUser} />
                   )}
                   {/* {tab === 'Lab' && <Lab />} */}

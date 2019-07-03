@@ -73,7 +73,6 @@ const InputTag = ({ id, inputTags, setInputTags, memories, validate }) => {
             <Tag
               key={tag}
               onClick={e => {
-                console.log('inputTags: ', inputTags);
                 setInputTags(
                   inputTags.filter(
                     tag =>
