@@ -9,6 +9,7 @@ export const Button = styled.button`
   color: ${colors.darkWhite};
   padding: 0.5rem;
   border: 1px solid ${colors.darkGrey};
+  margin-left: ${p => (p.marginLeft ? '0.1rem' : 'inherit')};
 `;
 export const MinimalButton = styled.button`
   background-color: inherit;
@@ -59,4 +60,61 @@ export const LI = styled.li`
 `;
 export const FlexWrapper = styled.div`
   display: flex;
+`;
+
+export const Container = styled.div`
+  max-width: 90vw;
+  margin-top: 0.3rem;
+  margin-bottom: 3rem;
+  width: 100vw;
+`;
+
+export const Header = styled.h2`
+  color: ${colors.brightGrey || 'white'};
+  display: flex;
+  margin-bottom: 0.8rem;
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export const Body = styled.div`
+  color: ${colors.brightGrey || 'white'};
+`;
+
+export const TabWrapper = styled.div`
+  display: flex;
+  justify-content: stretch;
+`;
+
+export const Tab = styled.button`
+  background-color: ${p => (p.selected ? colors.brightGrey : colors.darkGrey)};
+  color: ${colors.white};
+  width: 100%;
+  padding: 0.5rem 0.5rem;
+  margin: 0rem 0.05rem 0.6rem;
+  outline: none;
+  border: none;
+
+  :hover {
+    background-color: ${colors.brightGrey};
+    cursor: pointer;
+  }
+`;
+
+export const saveTab = (id, tab, setTab) => {
+  setTab(tab);
+  sessionStorage.setItem(`${id}-tab`, tab);
+};
+
+export const Link = styled.a`
+  color: ${colors.orange};
+  text-decoration: none;
+  margin-left: ${p => (p.marginLeft ? '0.3rem' : 'inherit')};
+  margin-right: ${p => (p.marginRight ? '0.3rem' : 'inherit')};
+`;
+
+export const P = styled.p`
+  margin-bottom: 0.5rem;
 `;

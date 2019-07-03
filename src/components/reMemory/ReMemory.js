@@ -8,6 +8,7 @@ import Sticky from './Sticky';
 import Search from './Search';
 import Settings from './Settings';
 import { downloadObjectAsJson } from '../../utils/helpers';
+import { Header, Container, Body } from '../shared/commonComponents';
 
 export const ReMemory = ({ currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
@@ -167,27 +168,6 @@ export const ReMemory = ({ currentUser }) => {
     </>
   );
 };
-
-const Container = styled.div`
-  max-width: 90vw;
-  margin-top: 0.3rem;
-  margin-bottom: 3rem;
-  width: 100vw;
-`;
-
-const Header = styled.h2`
-  color: ${colors.brightGrey || 'white'};
-  display: flex;
-  margin-bottom: 0.8rem;
-
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-const Body = styled.div`
-  color: ${colors.brightGrey || 'white'};
-`;
 
 const SearchIcon = styled.div`
   margin-left: 0.6rem;

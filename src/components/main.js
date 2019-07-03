@@ -13,8 +13,10 @@ import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
 import { ReMemory } from './reMemory/ReMemory';
+import { StockPickersMonthly } from './StockPickersMonthly/StockPickersMonthly';
+import { TabWrapper, Tab, saveTab } from './shared/commonComponents';
 
-const tabs = ['Users', 'Chat', 'Habits', 'ReMemory'];
+const tabs = ['Users', 'Chat', 'Habits', 'ReMemory', 'SPM'];
 
 export const Main = () => {
   const [tab, setTab] = useState('Welcome');
@@ -34,17 +36,15 @@ export const Main = () => {
     get(`${apiUrl}/users`, 'Unauthorized').then(users => {
       if (users.error) return;
       setUsers(users);
-      // setCurrentUser(
-      //   users.find(
-      //     user =>
-      //       user.username === process.env.MOCK_USER ||
-      //       (sessionStorage.getItem('username') &&
-      //         user.password === process.env.MOCK_PASSWORD) ||
-      //       sessionStorage.getItem('password')
-      //   )
-      // );
+      setCurrentUser(
+        users.find(
+          user =>
+            user.username === sessionStorage.getItem('username') &&
+            user.password === sessionStorage.getItem('password')
+        )
+      );
     });
-    setTab(sessionStorage.getItem('tab') || 'Welcome');
+    setTab(sessionStorage.getItem('main-tab') || 'Spm');
   }, [signUpSuccessful, loginSuccessful, updateUsers]);
 
   return (
@@ -95,7 +95,7 @@ export const Main = () => {
                       <Tab
                         key={x}
                         selected={tab === x}
-                        onClick={() => saveTab(x, setTab)}
+                        onClick={() => saveTab('main', x, setTab)}
                       >
                         {x}
                       </Tab>
@@ -120,6 +120,12 @@ export const Main = () => {
                   {tab === 'ReMemory' && currentUser.username === 'Sebbe' && (
                     <ReMemory users={users} currentUser={currentUser} />
                   )}
+                  {tab === 'SPM' && currentUser.username === 'Sebbe' && (
+                    <StockPickersMonthly
+                      users={users}
+                      currentUser={currentUser}
+                    />
+                  )}
                   {/* {tab === 'Lab' && <Lab />} */}
                 </MainWrapper>
               </>
@@ -131,35 +137,10 @@ export const Main = () => {
   );
 };
 
-const saveTab = (tab, setTab) => {
-  setTab(tab);
-  sessionStorage.setItem('tab', tab);
-};
-
 const MainWrapper = styled.div`
   color: ${colors.white};
   display: flex;
   justify-content: center;
   margin: 0;
   padding: 0;
-`;
-
-const TabWrapper = styled.div`
-  display: flex;
-  justify-content: stretch;
-`;
-
-const Tab = styled.button`
-  background-color: ${p => (p.selected ? colors.brightGrey : colors.darkGrey)};
-  color: ${colors.white};
-  width: 100%;
-  padding: 0.5rem 0.5rem;
-  margin: 0rem 0.05rem 0.6rem;
-  outline: none;
-  border: none;
-
-  :hover {
-    background-color: ${colors.brightGrey};
-    cursor: pointer;
-  }
 `;

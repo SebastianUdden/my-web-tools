@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Memory from './Memory';
 import InputTag from './InputTag';
-import { AddButton } from './commonComponents';
+import { AddButton } from '../shared/commonComponents';
 
 const Search = ({
   searchQueries,

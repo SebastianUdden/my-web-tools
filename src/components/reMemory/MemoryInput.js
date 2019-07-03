@@ -4,7 +4,7 @@ import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 import { create, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
-import { Input, Button } from './commonComponents';
+import { Input, Button } from '../shared/commonComponents';
 import InputTag from './InputTag';
 
 const getLinkConfiguration = (type, link) => ({

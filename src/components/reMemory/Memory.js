@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { LI, Tags, Tag, Em, MinimalButton } from './commonComponents';
-import { colors } from '../../constants/colors';
+import { LI, Tags, Tag, Em, MinimalButton } from '../shared/commonComponents';
+import { Description } from './Description';
 
 const Memory = ({
   memories,
@@ -157,37 +157,3 @@ const Edit = styled(MinimalButton)`
 `;
 
 export default Memory;
-
-const Wrapper = styled.p`
-  white-space: ${p => (p.summary ? 'inherit' : 'pre-wrap')};
-`;
-const Link = styled.a`
-  color: ${colors.orange};
-  text-decoration: none;
-`;
-
-const Description = ({ description, summary }) => {
-  const linkRegexp = /\[(.+)\]\(([^ ]+?)( "(.+)")?\)/gm;
-  const desc =
-    summary && description.length > 79
-      ? `${description.substring(0, 80)}...`
-      : description;
-  const splitDesc = desc.split(linkRegexp).filter(d => d);
-  return (
-    <Wrapper summary={summary}>
-      {splitDesc.map((d, i) => {
-        if (d.startsWith('http')) {
-          return (
-            <Link href={d} rel="noopener noreferer" target="_blank">
-              {splitDesc[i - 1]}
-            </Link>
-          );
-        } else if (splitDesc[i + 1] && splitDesc[i + 1].startsWith('http')) {
-          return;
-        } else {
-          return <span>{d}</span>;
-        }
-      })}
-    </Wrapper>
-  );
-};
