@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {defaultImageUrl} from '../../constants/urls';
+import { defaultImageUrl } from '../../constants/urls';
 import { Avatar } from '../users/Avatar';
 
 export const Welcome = ({ currentUser }) => (
@@ -16,8 +16,8 @@ export const Welcome = ({ currentUser }) => (
     <br />
     <h2>Welcome {currentUser.username}</h2>
     <p>
-      In the tabs above you can see other registered users, <br />
-      use MyChat as well as sign out.
+      In the tabs above you can see other registered Users, <br />
+      use the Chat, track your Habits and enter new memories into ReMemory.
     </p>
   </WelcomeWrapper>
 );

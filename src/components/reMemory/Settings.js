@@ -25,20 +25,23 @@ const Settings = ({
     <>
       <SearchSettings>
         <Symbol>&#x22CE;</Symbol>{' '}
-        {Object.keys(showDetailedViewFor).map(view => (
-          <Setting
-            key={view}
-            selectedSetting={showDetailedViewFor[view]}
-            onClick={() => {
-              setShowDetailedViewFor({
-                ...showDetailedViewFor,
-                [view]: !showDetailedViewFor[view],
-              });
-            }}
-          >
-            {showDetailedView[view]}
-          </Setting>
-        ))}
+        {Object.keys(showDetailedViewFor).map(
+          (view, index) =>
+            index !== Object.keys(showDetailedViewFor).length - 1 && (
+              <Setting
+                key={view}
+                selectedSetting={showDetailedViewFor[view]}
+                onClick={() => {
+                  setShowDetailedViewFor({
+                    ...showDetailedViewFor,
+                    [view]: !showDetailedViewFor[view],
+                  });
+                }}
+              >
+                {showDetailedView[view]}
+              </Setting>
+            )
+        )}
       </SearchSettings>
       <SearchSettings>
         <Symbol>&#x2195;</Symbol>{' '}

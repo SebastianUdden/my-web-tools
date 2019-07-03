@@ -7,6 +7,7 @@ import MemoryInput from './MemoryInput';
 import Sticky from './Sticky';
 import Search from './Search';
 import Settings from './Settings';
+import { downloadObjectAsJson } from '../../utils/helpers';
 
 export const ReMemory = ({ currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
@@ -104,6 +105,17 @@ export const ReMemory = ({ currentUser }) => {
               >
                 &#x2699;
               </SettingsIcon>
+              {showSettings && (
+                <>
+                  <BackupIcon
+                    onClick={() =>
+                      downloadObjectAsJson(memories, 'memories-backup')
+                    }
+                  >
+                    &#x22BB;
+                  </BackupIcon>
+                </>
+              )}
             </>
           )}
         </Header>
@@ -186,13 +198,18 @@ const SearchIcon = styled.div`
   color: ${colors.darkWhite};
 `;
 const Icon = styled.span`
-  margin-left: 0.6rem;
   color: ${colors.darkWhite};
 `;
-const AddIcon = styled(Icon)``;
+const AddIcon = styled(Icon)`
+  margin-left: 0.6rem;
+`;
 const SettingsIcon = styled(Icon)`
   display: flex;
   align-items: center;
   padding-top: 0.07rem;
+  margin-left: 0.6rem;
   font-size: small;
+`;
+const BackupIcon = styled(Icon)`
+  margin-left: 0.3rem;
 `;
