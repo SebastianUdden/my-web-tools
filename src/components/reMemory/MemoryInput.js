@@ -5,7 +5,7 @@ import { apiUrl } from '../../constants/urls';
 import { create, update, remove } from '../../utils/api';
 import { uuidv4 } from '../../utils/helpers';
 import { Input, Button } from '../shared/commonComponents';
-import InputTag from './InputTag';
+import InputTag from '../shared/InputTag';
 
 const getLinkConfiguration = (type, link) => ({
   _id: uuidv4(),

@@ -8,7 +8,7 @@ import {
   saveTab,
 } from '../shared/commonComponents';
 import { About } from './About';
-import { StockAPI } from './StockAPI';
+import { StockAPI } from './stock-api/StockAPI';
 import { CryptoAPI } from './CryptoAPI';
 import { Tools } from './tools/Tools';
 

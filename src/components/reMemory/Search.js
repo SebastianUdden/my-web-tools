@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import Memory from './Memory';
-import InputTag from './InputTag';
 import { AddButton } from '../shared/commonComponents';
+import InputTag from '../shared/InputTag';
 
 const Search = ({
   searchQueries,

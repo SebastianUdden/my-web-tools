@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  Input,
-  Tags,
-  Tag,
-  FlexWrapper,
-  AddButton,
-} from '../shared/commonComponents';
+import { Input, Tags, Tag, FlexWrapper, AddButton } from './commonComponents';
 import Suggestions from './Suggestions';
 
 const InputTag = ({ id, inputTags, setInputTags, memories, validate }) => {
