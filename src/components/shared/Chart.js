@@ -60,6 +60,9 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
   const fiveDown = point => (point > 5 ? point - 5 : 0);
   const fiveUp = point =>
     point < positions.length - 5 ? point + 5 : positions.length - 1;
+  const twentyDown = point => (point > 20 ? point - 20 : 0);
+  const twentyUp = point =>
+    point < positions.length - 20 ? point + 20 : positions.length - 1;
 
   const checkKey = e => {
     const event = e || window.event;
@@ -90,10 +93,16 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
     <Wrapper>
       <FlexWrapper>
         <NavigateButton
+          id="twenty-down"
+          onClick={() => setSelectedPoint(twentyDown(selectedPoint))}
+        >
+          &#x3c;&#x3c;&#x3c;
+        </NavigateButton>
+        <NavigateButton
           id="five-down"
           onClick={() => setSelectedPoint(fiveDown(selectedPoint))}
         >
-          &#x3c; &#x3c;
+          &#x3c;&#x3c;
         </NavigateButton>
         <NavigateButton
           id="one-down"
@@ -111,7 +120,13 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
           id="five-up"
           onClick={() => setSelectedPoint(fiveUp(selectedPoint))}
         >
-          &#x3e; &#x3e;
+          &#x3e;&#x3e;
+        </NavigateButton>
+        <NavigateButton
+          id="twenty-up"
+          onClick={() => setSelectedPoint(twentyUp(selectedPoint))}
+        >
+          &#x3e;&#x3e;&#x3e;
         </NavigateButton>
       </FlexWrapper>
       <SVG viewBox={`0 0 ${maxWidth} ${maxHeight}`}>
