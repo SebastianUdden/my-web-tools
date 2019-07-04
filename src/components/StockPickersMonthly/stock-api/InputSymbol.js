@@ -10,6 +10,12 @@ import { get } from '../../../utils/api';
 import Suggestions from '../../shared/Suggestions';
 import { useDebounce } from '../../../hooks/useDebounce';
 
+const cryptoCurrencies = [
+  { symbol: 'BTC', name: 'BitCoin' },
+  { symbol: 'ETH', name: 'Ethereum' },
+  { symbol: 'XRP', name: 'Ripple' },
+];
+
 export const InputSymbol = ({
   id,
   setSelectedStock,
@@ -21,27 +27,61 @@ export const InputSymbol = ({
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchTerm = useDebounce(input, 1000);
+  const matchCrypto = value =>
+    cryptoCurrencies.some(
+      c =>
+        c.symbol === value.toUpperCase() ||
+        c.name.toUpperCase() === value.toUpperCase()
+    );
+  const getCrypto = value =>
+    cryptoCurrencies.find(
+      c =>
+        c.name.toUpperCase() === value.toUpperCase() ||
+        c.symbol === value.toUpperCase()
+    );
 
-  const addTag = () => {
+  const addTag = value => {
+    console.log('Adding: ', value);
+    console.log('Results: ', results);
     if (
+      !matchCrypto(value) &&
       !results.filter(m => m.name.toLowerCase() === input.toLowerCase()).length
     )
       return;
     const formatedInput = input && input.split('-')[0].trim();
-    const stockUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${formatedInput}&apikey=${
-      process.env.STOCK_API_KEY
-    }`;
-    setSelectedStock(undefined);
-    get(stockUrl).then(response => {
-      const stock = results.find(r => r._id === formatedInput);
-      console.log('Symbol-response: ', response);
-      response.note
-        ? setApiOverload(response)
-        : setSelectedStock({
-            ...stock,
-            timeSeriesDaily: response['Time Series (Daily)'],
-          });
-    });
+    if (matchCrypto(value)) {
+      const cryptoUrl = `https://www.alphavantage.co/query?function=DIGITAL_CURRENCY_DAILY&symbol=${getCrypto(
+        formatedInput
+      ) && getCrypto(formatedInput).symbol.toUpperCase()}&market=CNY&apikey=${
+        process.env.STOCK_API_KEY
+      }`;
+      setSelectedStock(undefined);
+      get(cryptoUrl).then(response => {
+        console.log('Symbol-response: ', response);
+        response.note
+          ? setApiOverload(response)
+          : setSelectedStock({
+              ...getCrypto(formatedInput),
+              timeSeriesCryptoCurrencyDaily:
+                response['Time Series (Digital Currency Daily)'],
+            });
+      });
+    } else {
+      const stockUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${formatedInput}&apikey=${
+        process.env.STOCK_API_KEY
+      }`;
+      setSelectedStock(undefined);
+      get(stockUrl).then(response => {
+        const stock = results.find(r => r._id === formatedInput);
+        console.log('Symbol-response: ', response);
+        response.note
+          ? setApiOverload(response)
+          : setSelectedStock({
+              ...stock,
+              timeSeriesDaily: response['Time Series (Daily)'],
+            });
+      });
+    }
   };
 
   useEffect(() => {
@@ -91,7 +131,7 @@ export const InputSymbol = ({
         />
         <AddButton
           onClick={() => {
-            addTag();
+            addTag(document.getElementById(id).value);
             document.getElementById(id).focus();
           }}
         >

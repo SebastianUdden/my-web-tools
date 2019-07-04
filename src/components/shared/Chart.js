@@ -183,7 +183,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
             (p, i) =>
               (p === high || p === low) && (
                 <Text key={p} x={0} y={positionsXY[i].split(',')[1]}>
-                  {precise(Number(p), 4)}
+                  {precise(Number(p), 6)}
                 </Text>
               )
           )}
@@ -237,6 +237,7 @@ const Line = styled.line`
 `;
 
 const Text = styled.text`
+  font-size: x-small;
   fill: ${p => (p.interactive ? colors.red : colors.darkWhite)};
 `;
 

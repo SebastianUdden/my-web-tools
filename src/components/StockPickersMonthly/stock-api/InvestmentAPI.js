@@ -4,7 +4,7 @@ import { Stock } from './Stock';
 import { InputSymbol } from './InputSymbol';
 import { Error } from '../../shared/commonComponents';
 
-export const StockAPI = () => {
+export const InvestmentAPI = () => {
   const [selectedStock, setSelectedStock] = useState(undefined);
   const [apiOverload, setApiOverload] = useState(undefined);
 
@@ -14,10 +14,10 @@ export const StockAPI = () => {
 
   return (
     <>
-      <H2>StockAPI</H2>
+      <H2>Investment API</H2>
       <InputSymbol
         id="stock-symbol"
-        placeholder="Input stock symbol..."
+        placeholder="Input stock or currency symbol ..."
         selectedStock={selectedStock}
         setSelectedStock={setSelectedStock}
         setApiOverload={setApiOverload}

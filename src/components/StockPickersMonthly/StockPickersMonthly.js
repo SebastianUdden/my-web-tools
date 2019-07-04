@@ -9,13 +9,12 @@ import {
   saveTab,
 } from '../shared/commonComponents';
 import About from './About';
-import { StockAPI } from './stock-api/StockAPI';
-import { CryptoAPI } from './CryptoAPI';
+import { InvestmentAPI } from './stock-api/InvestmentAPI';
 import { Tools } from './tools/Tools';
 
 const StockPickersMonthly = () => {
   const [tab, setTab] = useState(sessionStorage.getItem('spm-tab') || 'About');
-  const tabs = ['About', 'Tools', 'StockAPI', 'CryptoAPI'];
+  const tabs = ['About', 'Tools', 'Investment API'];
 
   return (
     <SPMContainer>
@@ -35,8 +34,7 @@ const StockPickersMonthly = () => {
       <Body>
         {tab === 'About' && <About />}
         {tab === 'Tools' && <Tools />}
-        {tab === 'StockAPI' && <StockAPI />}
-        {tab === 'CryptoAPI' && <CryptoAPI />}
+        {tab === 'Investment API' && <InvestmentAPI />}
       </Body>
     </SPMContainer>
   );

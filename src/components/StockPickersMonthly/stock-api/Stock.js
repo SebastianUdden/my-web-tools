@@ -4,17 +4,29 @@ import { colors } from '../../../constants/colors';
 import Chart from '../../shared/Chart';
 import { P } from '../../shared/commonComponents';
 
+const getTimeSeriesDaily = tsds =>
+  Object.keys(tsds)
+    .map(tsd => ({
+      time: tsd,
+      value: Math.floor(tsds[tsd]['2. high'] * 100) / 100,
+    }))
+    .reverse();
+
+const getTimeSeriesCryptoCurrencyDaily = tsds =>
+  Object.keys(tsds)
+    .map(tsd => ({
+      time: tsd,
+      value: Math.floor(tsds[tsd]['2b. high (USD)'] * 100) / 100,
+    }))
+    .reverse();
+
 export const Stock = ({ stock }) => {
   if (!stock) return <></>;
   const tsds =
     stock && stock.timeSeriesDaily
-      ? Object.keys(stock.timeSeriesDaily)
-          .map(tsd => ({
-            time: tsd,
-            value:
-              Math.floor(stock.timeSeriesDaily[tsd]['2. high'] * 100) / 100,
-          }))
-          .reverse()
+      ? getTimeSeriesDaily(stock.timeSeriesDaily)
+      : stock.timeSeriesCryptoCurrencyDaily
+      ? getTimeSeriesCryptoCurrencyDaily(stock.timeSeriesCryptoCurrencyDaily)
       : [];
   const [selectedPoint, setSelectedPoint] = useState(
     tsds ? tsds.length - 1 : 0
@@ -22,7 +34,9 @@ export const Stock = ({ stock }) => {
 
   return (
     <Container>
-      <H3>{stock.name}</H3>
+      <H3>
+        {stock.symbol} - {stock.name}
+      </H3>
       {tsds.length !== 0 && (
         <Chart
           id={'stock-chart'}
@@ -73,7 +87,7 @@ const Span = styled.span`
 `;
 
 const H3 = styled.h3`
-  margin-bottom: 0rem;
+  margin-bottom: 0.3rem;
 `;
 
 const SelectedTimeSeriesValue = ({ selected }) => (
