@@ -8,12 +8,12 @@ import {
   Tab,
   saveTab,
 } from '../shared/commonComponents';
-import { About } from './About';
+import About from './About';
 import { StockAPI } from './stock-api/StockAPI';
 import { CryptoAPI } from './CryptoAPI';
 import { Tools } from './tools/Tools';
 
-export const StockPickersMonthly = () => {
+const StockPickersMonthly = () => {
   const [tab, setTab] = useState(sessionStorage.getItem('spm-tab') || 'About');
   const tabs = ['About', 'Tools', 'StockAPI', 'CryptoAPI'];
 
@@ -45,3 +45,5 @@ export const StockPickersMonthly = () => {
 const SPMContainer = styled(Container)`
   width: 100%;
 `;
+
+export default StockPickersMonthly;

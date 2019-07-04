@@ -6,7 +6,7 @@ import { LoginInput } from './LoginInput';
 import { colors } from '../../constants/colors';
 import { apiUrl } from '../../constants/urls';
 
-export const LoginForm = ({
+const LoginForm = ({
   setCurrentUser,
   setSignup,
   signUpSuccessful,
@@ -139,3 +139,5 @@ const HandleLogin = (
     });
   }
 };
+
+export default LoginForm;

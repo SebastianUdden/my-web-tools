@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { StaticQuery, graphql } from 'gatsby';
 import Header from './header';
 
+import SignupForm from './signup/SignupForm';
+import LoginForm from './login/LoginForm';
+import Welcome from './welcome/Welcome';
+import Users from './users/Users';
+import Chat from './chat/Chat';
+import Habits from './habits/Habits.js';
+import ReMemory from './reMemory/ReMemory';
+import StockPickersMonthly from './stockPickersMonthly/StockPickersMonthly';
 import { colors } from '../constants/colors';
-import { Chat } from './chat/Chat';
-import { LoginForm } from './login/LoginForm';
-import { Welcome } from './welcome/Welcome';
-import { Habits } from './habits/Habits.js';
-import { SignupForm } from './signup/SignupForm';
-import { Users } from './users/Users';
 import { get } from '../utils/api';
 import { apiUrl } from '../constants/urls';
-import { ReMemory } from './reMemory/ReMemory';
-import { StockPickersMonthly } from './StockPickersMonthly/StockPickersMonthly';
 import { TabWrapper, Tab, saveTab } from './shared/commonComponents';
 
 const tabs = ['Users', 'Chat', 'Habits', 'ReMemory', 'SPM'];

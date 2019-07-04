@@ -117,3 +117,8 @@ export const Link = styled.a`
 export const P = styled.p`
   margin-bottom: 0.5rem;
 `;
+
+export const Error = styled.p`
+  padding: 0.5rem 0.2rem;
+  color: ${colors.red};
+`;

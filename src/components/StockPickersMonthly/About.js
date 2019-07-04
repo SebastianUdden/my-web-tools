@@ -1,7 +1,7 @@
 import React from 'react';
 import { P } from '../shared/commonComponents';
 
-export const About = () => (
+const About = () => (
   <>
     <P>
       A group of talented individuals working towards the common goal of
@@ -47,3 +47,5 @@ export const About = () => (
     </ul>
   </>
 );
+
+export default About;

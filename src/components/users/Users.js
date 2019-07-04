@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { User } from './User';
 
-export const Users = ({ currentUser, users, updateUsers, setUpdateUsers }) => (
+const Users = ({ currentUser, users, updateUsers, setUpdateUsers }) => (
   <UsersWrapper>
     <User
       isCurrentUser={true}
@@ -33,3 +33,5 @@ const UsersWrapper = styled.div`
   padding: 0;
   width: 100%;
 `;
+
+export default Users;

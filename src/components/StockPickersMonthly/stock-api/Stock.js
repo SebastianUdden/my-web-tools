@@ -7,25 +7,30 @@ import { P } from '../../shared/commonComponents';
 export const Stock = ({ stock }) => {
   if (!stock) return <></>;
   const tsds =
-    stock &&
-    stock.timeSeriesDaily &&
-    Object.keys(stock.timeSeriesDaily)
-      .map(tsd => ({
-        time: tsd,
-        value: Math.floor(stock.timeSeriesDaily[tsd]['2. high'] * 100) / 100,
-      }))
-      .reverse();
-  const [selectedPoint, setSelectedPoint] = useState(tsds.length - 1);
+    stock && stock.timeSeriesDaily
+      ? Object.keys(stock.timeSeriesDaily)
+          .map(tsd => ({
+            time: tsd,
+            value:
+              Math.floor(stock.timeSeriesDaily[tsd]['2. high'] * 100) / 100,
+          }))
+          .reverse()
+      : [];
+  const [selectedPoint, setSelectedPoint] = useState(
+    tsds ? tsds.length - 1 : 0
+  );
 
   return (
     <Container>
       <H3>{stock.name}</H3>
-      <Chart
-        id={'stock-chart'}
-        positions={tsds}
-        selectedPoint={selectedPoint}
-        setSelectedPoint={setSelectedPoint}
-      />
+      {tsds.length !== 0 && (
+        <Chart
+          id={'stock-chart'}
+          positions={tsds}
+          selectedPoint={selectedPoint}
+          setSelectedPoint={setSelectedPoint}
+        />
+      )}
       {stock && stock.timeSeriesDaily && (
         <SelectedTimeSeriesValue
           selected={

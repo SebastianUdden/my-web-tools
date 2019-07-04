@@ -19,7 +19,7 @@ export const Description = ({ description, summary }) => {
             </Link>
           );
         } else if (splitDesc[i + 1] && splitDesc[i + 1].startsWith('http')) {
-          return;
+          return '';
         } else {
           return <span>{d}</span>;
         }

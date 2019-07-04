@@ -10,7 +10,7 @@ import Settings from './Settings';
 import { downloadObjectAsJson } from '../../utils/helpers';
 import { Header, Container, Body } from '../shared/commonComponents';
 
-export const ReMemory = ({ currentUser }) => {
+const ReMemory = ({ currentUser }) => {
   const [toggleRefresh, setToggleRefresh] = useState(false);
   const [showMemoryInput, setShowMemoryInput] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
@@ -131,8 +131,6 @@ export const ReMemory = ({ currentUser }) => {
               memories={memories}
               currentUser={currentUser}
               setShowMemoryInput={setShowMemoryInput}
-              toggleRefresh={toggleRefresh}
-              setToggleRefresh={setToggleRefresh}
             />
           )}
           {!showMemoryInput && (
@@ -193,3 +191,5 @@ const SettingsIcon = styled(Icon)`
 const BackupIcon = styled(Icon)`
   margin-left: 0.3rem;
 `;
+
+export default ReMemory;

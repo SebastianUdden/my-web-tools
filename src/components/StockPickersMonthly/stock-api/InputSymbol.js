@@ -10,16 +10,19 @@ import { get } from '../../../utils/api';
 import Suggestions from '../../shared/Suggestions';
 import { useDebounce } from '../../../hooks/useDebounce';
 
-export const InputSymbol = ({ id, setSelectedStock, placeholder }) => {
+export const InputSymbol = ({
+  id,
+  setSelectedStock,
+  placeholder,
+  setApiOverload,
+}) => {
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const debouncedSearchTerm = useDebounce(input, 500);
+  const debouncedSearchTerm = useDebounce(input, 1000);
 
   const addTag = () => {
-    console.log('results: ', results);
-    console.log('input: ', input);
     if (
       !results.filter(m => m.name.toLowerCase() === input.toLowerCase()).length
     )
@@ -31,11 +34,13 @@ export const InputSymbol = ({ id, setSelectedStock, placeholder }) => {
     setSelectedStock(undefined);
     get(stockUrl).then(response => {
       const stock = results.find(r => r._id === formatedInput);
-      console.log('res: ', response);
-      setSelectedStock({
-        ...stock,
-        timeSeriesDaily: response['Time Series (Daily)'],
-      });
+      console.log('Symbol-response: ', response);
+      response.note
+        ? setApiOverload(response)
+        : setSelectedStock({
+            ...stock,
+            timeSeriesDaily: response['Time Series (Daily)'],
+          });
     });
   };
 
@@ -46,19 +51,23 @@ export const InputSymbol = ({ id, setSelectedStock, placeholder }) => {
         process.env.STOCK_API_KEY
       }`;
       get(symbolUrl).then(response => {
-        console.log('Response: ', response);
-        const formattedResult = response.bestMatches.map(r => ({
-          _id: r['1. symbol'],
-          name: `${r['1. symbol']} - ${r['2. name']}`,
-          type: r['3. type'],
-          region: r['4. region'],
-          marketOpen: r['5. marketOpen'],
-          marketClose: r['6. marketClose'],
-          timezone: r['7. timezone'],
-          currency: r['8. currency'],
-          matchScore: r['9. matchScore'],
-        }));
+        console.log('Keyword-response: ', response);
+
+        const formattedResult = response.bestMatches
+          ? response.bestMatches.map(r => ({
+              _id: r['1. symbol'],
+              name: `${r['1. symbol']} - ${r['2. name']}`,
+              type: r['3. type'],
+              region: r['4. region'],
+              marketOpen: r['5. marketOpen'],
+              marketClose: r['6. marketClose'],
+              timezone: r['7. timezone'],
+              currency: r['8. currency'],
+              matchScore: r['9. matchScore'],
+            }))
+          : [];
         setIsSearching(false);
+        response['Note'] && setApiOverload(response);
         setResults(formattedResult);
       });
     } else {

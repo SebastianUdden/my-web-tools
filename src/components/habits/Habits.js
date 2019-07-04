@@ -38,7 +38,7 @@ const Button = styled.button`
   }
 `;
 
-export const Habits = ({ users, currentUser }) => {
+const Habits = ({ users, currentUser }) => {
   const [listOrder, setListOrder] = useState([]);
   const [doOnce, setDoOnce] = useState(false);
   const [value, setValue] = useState('');
@@ -159,3 +159,5 @@ const InputButton = styled.button`
   background-color: ${colors.white};
   color: ${colors.darkGrey};
 `;
+
+export default Habits;

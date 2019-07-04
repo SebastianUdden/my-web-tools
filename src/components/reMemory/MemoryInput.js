@@ -177,7 +177,7 @@ const MemoryInput = ({
                         .includes(child.linkedId)
                   );
                   removedChildren &&
-                    removedChildren.map(removedChild => {
+                    removedChildren.forEach(removedChild => {
                       memories.forEach(m => {
                         if (
                           m._id === removedChild.linkedId &&
@@ -243,7 +243,7 @@ const MemoryInput = ({
                         .includes(parent.linkedId)
                   );
                   removedParents &&
-                    removedParents.map(removedParent => {
+                    removedParents.forEach(removedParent => {
                       memories.forEach(m => {
                         if (
                           m._id === removedParent.linkedId &&
@@ -364,20 +364,6 @@ const DeleteButton = styled(FormButton)`
   background: maroon;
   border: ${p => (p.confirmDelete ? '1px solid white' : 'none')};
   color: ${colors.white};
-`;
-const Select = styled.select`
-  padding: 0.3rem;
-  border: 1px solid ${colors.darkGrey};
-  background-color: inherit;
-  color: inherit;
-`;
-const SelectChild = styled(Select)`
-  width: 85%;
-  border-radius: 0;
-`;
-const SelectParent = styled(Select)`
-  width: 85%;
-  border-radius: 0;
 `;
 
 export default MemoryInput;

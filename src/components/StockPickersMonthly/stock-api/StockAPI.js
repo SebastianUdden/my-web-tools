@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Stock } from './Stock';
 import { InputSymbol } from './InputSymbol';
+import { Error } from '../../shared/commonComponents';
 
 export const StockAPI = () => {
   const [selectedStock, setSelectedStock] = useState(undefined);
+  const [apiOverload, setApiOverload] = useState(undefined);
+
+  useEffect(() => {
+    console.log('Overload: ', apiOverload);
+  }, [apiOverload]);
 
   return (
     <>
@@ -14,8 +20,10 @@ export const StockAPI = () => {
         placeholder="Input stock symbol..."
         selectedStock={selectedStock}
         setSelectedStock={setSelectedStock}
+        setApiOverload={setApiOverload}
       />
-      {selectedStock && <Stock stock={selectedStock} />}
+      {selectedStock && !apiOverload && <Stock stock={selectedStock} />}
+      {apiOverload && <Error>{apiOverload['Note']}</Error>}
     </>
   );
 };

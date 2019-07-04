@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { defaultImageUrl } from '../../constants/urls';
 import { Avatar } from '../users/Avatar';
 
-export const Welcome = ({ currentUser }) => (
+const Welcome = ({ currentUser }) => (
   <WelcomeWrapper>
     <Avatar
       image={currentUser.image || defaultImageUrl}
@@ -26,3 +26,5 @@ const WelcomeWrapper = styled.div`
   padding: 5rem;
   text-align: center;
 `;
+
+export default Welcome;

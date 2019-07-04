@@ -7,7 +7,7 @@ import { Avatar } from '../users/Avatar';
 import { colors } from '../../constants/colors';
 import { apiUrl, defaultImageUrl } from '../../constants/urls';
 
-export const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
+const SignupForm = ({ setSignup, setSignUpSuccessful }) => {
   const [showSignup, setShowSignup] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -147,3 +147,5 @@ const HandleSignup = (signupData, users, setSignUpSuccessful) => {
     setSignUpSuccessful(true);
   }
 };
+
+export default SignupForm;

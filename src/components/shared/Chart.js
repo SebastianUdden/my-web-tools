@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import { Button, FlexWrapper } from './commonComponents';
@@ -196,6 +196,7 @@ const Circle = styled.circle`
 `;
 
 const NavigateButton = styled(Button)`
+  touch-action: manipulation;
   width: 100%;
   margin-right: 0.1rem;
   padding: 0;
