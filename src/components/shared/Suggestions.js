@@ -11,7 +11,7 @@ const Suggestions = ({
   setShowSuggestions,
 }) => {
   const options = results.map((r, index) => (
-    <option key={r._id} value={r.name} tabIndex={index}>
+    <option key={`${r._id}${r.name}`} value={r.name} tabIndex={index}>
       {r.name}
     </option>
   ));

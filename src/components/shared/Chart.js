@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { colors } from '../../constants/colors';
 import { Button, FlexWrapper } from './commonComponents';
@@ -53,26 +53,65 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
   const positionsXY = values.map(
     (p, i) => `${getX(i, positions.length - 1)},${getY(p, high, low)}`
   );
+
+  const oneDown = point => (point > 0 ? point - 1 : 0);
+  const oneUp = point =>
+    point < positions.length - 1 ? point + 1 : positions.length - 1;
+  const fiveDown = point => (point > 5 ? point - 5 : 0);
+  const fiveUp = point =>
+    point < positions.length - 5 ? point + 5 : positions.length - 1;
+
+  const checkKey = e => {
+    const event = e || window.event;
+    if (event.keyCode === 38) {
+      // up arrow
+      e.stopPropagation();
+      e.preventDefault();
+      setSelectedPoint(fiveUp(selectedPoint));
+    } else if (event.keyCode === 40) {
+      // down arrow
+      e.stopPropagation();
+      e.preventDefault();
+      setSelectedPoint(fiveDown(selectedPoint));
+    } else if (event.keyCode === 37) {
+      // left arrow
+      setSelectedPoint(oneDown(selectedPoint));
+    } else if (event.keyCode === 39) {
+      // right arrow
+      setSelectedPoint(oneUp(selectedPoint));
+    }
+  };
+
+  useEffect(() => {
+    document.onkeydown = checkKey;
+  }, [selectedPoint]);
+
   return (
     <Wrapper>
       <FlexWrapper>
         <NavigateButton
-          onClick={() =>
-            setSelectedPoint(selectedPoint > 0 ? selectedPoint - 1 : 0)
-          }
+          id="five-down"
+          onClick={() => setSelectedPoint(fiveDown(selectedPoint))}
+        >
+          &#x3c; &#x3c;
+        </NavigateButton>
+        <NavigateButton
+          id="one-down"
+          onClick={() => setSelectedPoint(oneDown(selectedPoint))}
         >
           &#x3c;
         </NavigateButton>
         <NavigateButton
-          onClick={() =>
-            setSelectedPoint(
-              selectedPoint < positions.length - 1
-                ? selectedPoint + 1
-                : positions.length - 1
-            )
-          }
+          id="one-up"
+          onClick={() => setSelectedPoint(oneUp(selectedPoint))}
         >
           &#x3e;
+        </NavigateButton>
+        <NavigateButton
+          id="five-up"
+          onClick={() => setSelectedPoint(fiveUp(selectedPoint))}
+        >
+          &#x3e; &#x3e;
         </NavigateButton>
       </FlexWrapper>
       <SVG viewBox={`0 0 ${maxWidth} ${maxHeight}`}>
@@ -105,7 +144,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
           {values.map(
             (p, i) =>
               selectedPoint === i && (
-                <>
+                <React.Fragment key={p}>
                   <Text
                     interactive
                     x={positionsXY[i].split(',')[0] - maxWidth * 0.04}
@@ -120,7 +159,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
                     y1={maxHeight * 0.94}
                     y2={maxHeight * 0.06}
                   />
-                </>
+                </React.Fragment>
               )
           )}
         </g>
@@ -128,7 +167,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
           {values.map(
             (p, i) =>
               (p === high || p === low) && (
-                <Text x={0} y={positionsXY[i].split(',')[1]}>
+                <Text key={p} x={0} y={positionsXY[i].split(',')[1]}>
                   {precise(Number(p), 4)}
                 </Text>
               )
@@ -139,6 +178,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
             (t, i) =>
               selectedPoint === i && (
                 <Text
+                  key={t}
                   interactive
                   x={positionsXY[i].split(',')[0] - maxWidth * 0.1}
                   y={maxHeight * 0.98}
@@ -151,6 +191,7 @@ const Chart = ({ id, positions, selectedPoint, setSelectedPoint }) => {
         <g data-setname="Our first data set">
           {positions.map((p, i) => (
             <Circle
+              key={`${p.value}-${p.time}`}
               interactive={i === selectedPoint}
               onClick={() => setSelectedPoint(i)}
               cx={positionsXY[i].split(',')[0]}

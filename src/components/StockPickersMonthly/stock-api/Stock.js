@@ -79,7 +79,7 @@ const H3 = styled.h3`
 const SelectedTimeSeriesValue = ({ selected }) => (
   <Wrapper>
     {Object.keys(selected).map(s => (
-      <P>
+      <P key={s}>
         {s.substring(2, s.length)}: <Span>{selected[s]}</Span>
       </P>
     ))}
