@@ -63,10 +63,9 @@ export const FlexWrapper = styled.div`
 `;
 
 export const Container = styled.div`
-  max-width: 90vw;
   margin-top: 0.3rem;
   margin-bottom: 3rem;
-  width: 100vw;
+  padding: 0 0.5rem;
 `;
 
 export const Header = styled.h2`

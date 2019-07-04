@@ -28,6 +28,7 @@ export const InputSymbol = ({ id, setSelectedStock, placeholder }) => {
     const stockUrl = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${formatedInput}&apikey=${
       process.env.STOCK_API_KEY
     }`;
+    setSelectedStock(undefined);
     get(stockUrl).then(response => {
       const stock = results.find(r => r._id === formatedInput);
       console.log('res: ', response);

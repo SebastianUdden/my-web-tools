@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import {
   Container,
   Body,
@@ -17,7 +18,7 @@ export const StockPickersMonthly = () => {
   const tabs = ['About', 'Tools', 'StockAPI', 'CryptoAPI'];
 
   return (
-    <Container>
+    <SPMContainer>
       <Header onClick={() => setTab('About')}>Stock Pickers Monthly</Header>
       <TabWrapper>
         {tabs &&
@@ -37,6 +38,10 @@ export const StockPickersMonthly = () => {
         {tab === 'StockAPI' && <StockAPI />}
         {tab === 'CryptoAPI' && <CryptoAPI />}
       </Body>
-    </Container>
+    </SPMContainer>
   );
 };
+
+const SPMContainer = styled(Container)`
+  width: 100%;
+`;
